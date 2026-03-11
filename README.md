@@ -1,4 +1,4 @@
-# Group Formation App
+# Groupify
 
 Repository for **Team 12 Capstone Project**.
 
