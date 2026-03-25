@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('includes/head') %>
+  <body>
+
+    <main>
+      <form action="/signup" method="POST">
+        <% errors.forEach(error => { %>
+        <p class="notice"><%= error %></p>
+        <% }) %>
+
+        <fieldset>
+          <legend>Create an account</legend>
+          <label for="username"><small>Username</small></label>
+          <input type="text" id="username" name="username" autocomplete="off" />
+          <label for="email"><small>Email</small></label>
+          <input type="email" id="email" name="email" autocomplete="email" required />
+          <label for="password"><small>Password</small></label>
+          <input type="password" id="password" name="password" autocomplete="off" />
+
+          <br />
+          <button>Sign Up</button>
+        </fieldset>
+      </form>
+      <p>
+        Already have an account? 
+        <a href="/signin">Sign In</a>
+      </p>
+    </main>
+  </body>
+</html>
