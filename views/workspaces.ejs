@@ -1,42 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('includes/head') %>
-  <body>
-    <%- include('includes/header') %>
-    <main>
-      <h1>Your Workspaces</h1>
-      <% if (errors && errors.length > 0) { %>
-        <ul class="errors">
-          <% errors.forEach(error => { %>
-            <li><%= error %></li>
-          <% }) %>
-        </ul>
-      <% } %>
-      <section>
-        <h2>Create Workspace</h2>
-        <form action="/workspaces" method="POST">
-          <input type="text" name="workspaceName" placeholder="Workspace name" required />
-          <button type="submit" class="button">Create</button>
-        </form>
-      </section>
-      <section>
-        <h2>Join Workspace</h2>
-        <form action="/workspaces/join" method="POST">
-          <input type="text" name="joinCode" placeholder="Workspace code" required />
-          <button type="submit" class="button">Join</button>
-        </form>
-      </section>
-      <section>
-        <h2>Existing Workspaces</h2>
-        <ul>
-          <% workspaces.forEach(workspace => { %>
-            <li>
-              <strong><%= workspace.workspaceName %></strong>
-              (Join Code: <%= workspace.joinCode %>)
-            </li>
-          <% }) %>
-        </ul>
-      </section>
-    </main>
-  </body>
+<%- include('includes/head') %>
+
+<body class="workspace-page">
+<%- include('includes/header') %>
+
+<main class="workspace-layout">
+
+  <!-- LEFT PANEL -->
+  <section class="workspace-left">
+
+    <h2>Your Workspaces</h2>
+
+    <% if (workspaces.length === 0) { %>
+      <p>No workspaces yet.</p>
+    <% } %>
+
+    <% workspaces.forEach(workspace => { %>
+
+      <div class="workspace-card">
+        <div class="workspace-title">
+          <%= workspace.workspaceName %>
+        </div>
+
+        <div class="workspace-code">
+          Code: <%= workspace.joinCode %>
+        </div>
+      </div>
+
+    <% }) %>
+
+  </section>
+
+  <!-- RIGHT PANEL -->
+  <section class="workspace-right">
+
+  <div class="workspace-right-inner">
+
+    <!-- CREATE WORKSPACE -->
+
+    <div>
+      <h2>Create Workspace</h2>
+
+      <form action="/workspaces" method="POST">
+        <input
+          type="text"
+          name="workspaceName"
+          placeholder="Workspace name"
+          required
+        />
+
+        <button class="btn-yellow">
+          Create Workspace
+        </button>
+      </form>
+    </div>
+
+
+    <!-- JOIN WORKSPACE -->
+
+    <div>
+      <h2>Join Workspace</h2>
+
+      <form action="/workspaces/join" method="POST">
+        <input
+          type="text"
+          name="joinCode"
+          placeholder="Workspace code"
+          required
+        />
+
+        <button class="btn-yellow">
+          Join Workspace
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+</body>
 </html>
