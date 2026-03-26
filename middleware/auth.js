@@ -29,7 +29,7 @@ function mustBeGuest(req, res, next) {
 // mustBeLoggedIn middleware blocks non-logged in users from visiting certain pages
 function mustBeLoggedIn(req, res, next) {
     if (!req.user) {
-        return res.redirect("/login");
+        return res.redirect("/signin");
     }
     next();
 }

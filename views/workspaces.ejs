@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('includes/head') %>
+  <body>
+    <%- include('includes/header') %>
+    <main>
+      <h1>Your Workspaces</h1>
+      <% if (errors && errors.length > 0) { %>
+        <ul class="errors">
+          <% errors.forEach(error => { %>
+            <li><%= error %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+      <section>
+        <h2>Create Workspace</h2>
+        <form action="/workspaces" method="POST">
+          <input type="text" name="workspaceName" placeholder="Workspace name" required />
+          <button type="submit" class="button">Create</button>
+        </form>
+      </section>
+      <section>
+        <h2>Join Workspace</h2>
+        <form action="/workspaces/join" method="POST">
+          <input type="text" name="joinCode" placeholder="Workspace code" required />
+          <button type="submit" class="button">Join</button>
+        </form>
+      </section>
+      <section>
+        <h2>Existing Workspaces</h2>
+        <ul>
+          <% workspaces.forEach(workspace => { %>
+            <li>
+              <strong><%= workspace.workspaceName %></strong>
+              (Join Code: <%= workspace.joinCode %>)
+            </li>
+          <% }) %>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 });
 
 // landing page route, only for guests, logged in users will be redirected to dashboard
-app.get("/", mustBeGuest, (req, res) => {
+app.get("/", (req, res) => {
     res.render("Landing");
 });
 
@@ -45,12 +45,14 @@ app.use("/",authRoute)
 app.use("/workspaces", workRoute)
 app.use("/groups", groupRoute)
 
-app.use((req, res) => res.status(404).send("404 - Page Not Found"));
-
 app.get("/dashboard", (req, res) => {
     if (!req.user) return res.redirect("/signin")
     res.redirect("/workspaces")
 })
+
+app.use((req, res) => res.status(404).send("404 - Page Not Found"));
+
+
 
 // test database connection and start server. if error, log and exit
 async function startServer() {
@@ -63,3 +65,5 @@ async function startServer() {
     }
 }
 startServer()
+
+

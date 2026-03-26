@@ -128,4 +128,9 @@ router.post("/signin", async (req, res) => {
     }
 })
 
+router.get("/logout", (req, res) => {
+  res.clearCookie("GROUPIFY");
+  res.redirect("/");
+});
+
 module.exports = router;

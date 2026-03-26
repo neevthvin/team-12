@@ -4,15 +4,15 @@
   <body>
 
     <main>
-      <form action="/login" method="POST">
+      <form action="/signin" method="POST">
         <% errors.forEach(error => { %>
         <p class="notice"><%= error %></p>
         <% }) %>
 
         <fieldset>
           <legend>Log In</legend>
-          <label for="username or email"><small>Username or Email</small></label>
-          <input type="text" id="username" name="username" autocomplete="off" />
+          <label for="userOrEmail"><small>Username or Email</small></label>
+          <input type="text" id="userOrEmail" name="userOrEmail" autocomplete="off" />
 
           <label for="password"><small>Password</small></label>
           <input type="password" id="password" name="password" autocomplete="off" />
