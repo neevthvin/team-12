@@ -1,10 +1,42 @@
-<header>
-  <h2><a href="/">Groupify</a></h2>
+<header class="header">
+  <a href="/" class="logoLink">
+    <img src="/images/logo.png" alt="Groupify" class="logo">
+  </a>
   <nav>
     <% if (user) { %>
-    <a href="/logout">Log Out</a>
+      <a href="/logout" class="signinBut">LOG OUT</a>
     <% } else { %>
-    <a href="/signup">Sign Up</a>
+      <a href="/signin" class="signinBut">SIGN IN</a>
     <% } %>
   </nav>
 </header>
+
+<script>
+  const header = document.querySelector('.header');
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY && currentScrollY > 80) {
+          header.classList.add('hidden');
+        } else {
+          header.classList.remove('hidden');
+        }
+
+        if (currentScrollY > 10) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+</script>
