@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('includes/head') %>
+  <body>
+
+    <main>
+      <% if (errors && errors.length) { %>
+        <% errors.forEach(error => { %>
+          <p class="notice"><%= error %></p>
+        <% }) %>
+      <% } %>
+
+      <fieldset>
+        <legend>Enter Your Skills</legend>
+
+        <div class="enter-skills">
+          <input type="text" id="skillInput" placeholder="Enter Skills (ex: Creative Direction)" autocomplete="off" />
+          <button type="button" onclick="addSkill()">Add</button>
+        </div>
+
+        <div class="entered-skills" id="enteredSkills">
+        </div>
+
+        <br />
+
+        <button type="submit" onclick="submitSkills()">Confirm</button>
+        <a href="/">Skip for Now</a>
+      </fieldset>
+    </main>
+
+    <script src="/js/skills.js"></script>
+  </body>
+</html>
