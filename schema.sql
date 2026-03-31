@@ -12,6 +12,16 @@ CREATE TABLE IF NOT EXISTS User (
     password    VARCHAR(255) NOT NULL,
     createdAt   DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+/*
+Skills Table stores the Skills entered by each user
+*/
+CREATE TABLE IF NOT EXISTS Skills (
+    ID        INT AUTO_INCREMENT PRIMARY KEY,
+    userID    INT NOT NULL,
+    skills    VARCHAR(100) NOT NULL,
+    FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE CASCADE
+);
  
 /*
 Workspace table stores workspaces created by users
