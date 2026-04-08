@@ -37,6 +37,7 @@ app.use((req, res, next) => {
 
 // landing page route, only for guests, logged in users will be redirected to dashboard
 app.get("/", (req, res) => {
+    if (req.user) return res.redirect("/dashboard");
     res.render("Landing");
 });
 

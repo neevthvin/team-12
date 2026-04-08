@@ -4,6 +4,11 @@ const router = express.Router()
 const pool = require("./config/db")
 const jwt = require("jsonwebtoken")
 
+// For Forgot Password Functionality
+const { isEmpty } = require('./utils/object_isEmpty');
+const { FORGOT_PASSWORD_MODEL, RESET_PASSWORD_MODEL } = require('./validation_models/user');
+const nodemailer = require('nodemailer');
+
 //block logged in users from visiting authentication pages uses middleware function must be guest
 const { mustBeGuest} = require("./middleware/auth")
 
@@ -15,6 +20,19 @@ router.get("/signup", mustBeGuest, (req, res) => {
     res.render("SignUp", { errors: [] });
 })
 
+// forgot password page
+router.get("/forgot-password", mustBeGuest, (req, res) => {
+    res.render("ForgotPassword", { errors: [] });
+});
+
+// reset password page
+router.get("/reset-password", mustBeGuest, (req, res) => {
+    const email = req.query.email || req.cookies.resetEmail || "";
+    if (!email) {
+        return res.redirect("/forgot-password");
+    }
+    res.render("ResetPassword", { errors: [], email: email });
+});
 
 // registration route
 router.post("/signup", async (req, res) => {
@@ -153,6 +171,135 @@ router.post("/signin", async (req, res) => {
 router.get("/logout", (req, res) => {
   res.clearCookie("GROUPIFY");
   res.redirect("/");
+});
+
+/* forgot password and reset password */
+
+router.post("/forgot-password", async (req, res) => {
+    const errors = [];
+    
+    //Check the form data is found or not. utils/object_isEmpty.js being used
+    if (isEmpty(req.body)) {
+        errors.push("Email is required");
+        return res.render("ForgotPassword", { errors });
+    }
+    
+    //Check the form data is valid or not. Using user.js from validation_models folder
+    const { error } = FORGOT_PASSWORD_MODEL.validate(req.body);
+    
+    if (error) {
+        errors.push(error.details[0].message);
+        return res.render("ForgotPassword", { errors });
+    }
+    
+    const email = req.body.email;
+    
+    try {
+        // Check if user exists
+        const [rows] = await pool.query(
+            "SELECT * FROM User WHERE email = ?",
+            [email]
+        );
+        
+        // random number generation for OTP. will expire in 10 min
+        const otp = Math.floor(1000 + Math.random() * 9000).toString();
+        const otpExpire = new Date();
+        otpExpire.setMinutes(otpExpire.getMinutes() + 10);
+        
+        await pool.query("UPDATE User SET otp = ?, otpExpire = ? WHERE email = ?", [otp, otpExpire, email]);
+        
+        // nodemailer to send email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: 
+            {
+                user: 'groupifya@gmail.com',
+                pass: 'ovyh yiea lyhz mspj',
+            }
+        });
+        
+        await transporter.sendMail({
+            from: 'groupifya@gmail.com',
+            to: email,
+            subject: 'Groupify: Password Reset OTP',
+            text: `Your OTP is: ${otp}\n\nExpires in 10 minutes.`
+        });
+        
+        // cookie, email is sent to reset password page
+        res.cookie("resetEmail", email, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "strict",
+            maxAge: 1000 * 60 * 15
+        });
+        
+        res.redirect("/reset-password");
+        
+    } catch (err) {
+        console.error("Forgot password error:", err);
+        errors.push("Failed to send OTP. Please try again.");
+        res.render("ForgotPassword", { errors });
+    }
+});
+
+// reset password
+router.post("/reset-password", async (req, res) => 
+    {
+    const errors = [];
+    //cookie retrieved
+    const email = req.cookies.resetEmail || "";
+    
+    if (!email) 
+    {
+        return res.redirect("/forgot-password");
+    }
+
+    if (isEmpty(req.body)) {
+        errors.push("Form data not found");
+        return res.render("ResetPassword", { errors, email });
+    }
+    
+    try {
+        // Check the form data is valid or not. Using user.js from validation_models folder
+        const { error } = RESET_PASSWORD_MODEL.validate(req.body);
+        if (error) {
+            errors.push(error.details[0].message);
+            return res.render("ResetPassword", { errors, email });
+        }
+    
+        const otp = req.body.otp;
+        const password = req.body.password;
+        const confirmPassword = req.body.confirmPassword;
+    
+        if (password !== confirmPassword) {
+            errors.push("Passwords do not match");
+            return res.render("ResetPassword", { errors, email });
+        }
+
+        const [rows] = await pool.query("SELECT * FROM User WHERE email = ? AND otp = ? AND otpExpire > NOW()", [email, otp]);
+        
+        if (rows.length === 0) {
+            errors.push("Invalid or expired OTP");
+            return res.render("ResetPassword", { errors, email });
+        }
+        
+        // encryption
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        
+        // database update
+        await pool.query("UPDATE User SET password = ?, otp = NULL, otpExpire = NULL WHERE email = ?", [hashedPassword, email]);
+        
+        res.clearCookie("resetEmail");
+        res.redirect("/signin");
+        
+    } 
+    catch (err) 
+    {
+        console.error("Reset password error:", err);
+        errors.push("Failed to reset password. Please try again.");
+        res.render("ResetPassword", { errors, email });
+    }
 });
 
 module.exports = router;

@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('includes/head') %>
-  <body>
+  <%- include('includes/head2') %>
+  <body class="authPage">
+    
+    <main class="authContainer">
+      <a href="/">
+        <img src="/images/logo.webp" alt="Groupify" class="authLogo">
+      </a>
 
-    <main>
-      <form action="/signup" method="POST">
+      <h1 class="authTitle">
+        Sign Up
+      </h1>
+
+      <form action="/signup" method="POST" class="authFormBox">
         <% errors.forEach(error => { %>
-        <p class="notice"><%= error %></p>
+          <p class="authError"><i class="fa-solid fa-circle-info"></i> <%= error %></p>
         <% }) %>
 
-        <fieldset>
-          <legend>Create an account</legend>
-          <label for="username"><small>Username</small></label>
-          <input type="text" id="username" name="username" autocomplete="off" />
-          <label for="email"><small>Email</small></label>
-          <input type="email" id="email" name="email" autocomplete="email" required />
-          <label for="password"><small>Password</small></label>
-          <input type="password" id="password" name="password" autocomplete="off" />
+        <input type="text" id="username" name="username" autocomplete="off" placeholder="Username" class="authuserInput"/>
+        <input type="email" id="email" name="email" autocomplete="email" placeholder="Email" class="authuserInput" required/>
+        <input type="password" id="password" name="password" autocomplete="off" placeholder="Password" class="authuserInput"/>
 
-          <br />
-          <button>Sign Up</button>
-        </fieldset>
+        <button class="authButton">SIGN UP</button>
       </form>
-      <p>
-        Already have an account? 
-        <a href="/signin">Sign In</a>
+
+      <p class="account">
+        Already have an account?
+        <a href="/signin" class="linktoAuth">Sign In</a>
       </p>
+
     </main>
   </body>
 </html>
