@@ -163,4 +163,38 @@ router.post("/join", mustBeLoggedIn, async (req, res) => {
     }
 });
 
+// GET specific user workspace with groups
+router.get("/:workspaceID", mustBeLoggedIn, async (req, res) => {
+  try {
+    const workspaceID = req.params.workspaceID;
+    const [workspaceRows] = await pool.query("SELECT * FROM Workspace WHERE workspaceID = ?", [workspaceID]);
+    if (workspaceRows.length === 0) {
+      return res.status(404).redirect("/workspaces");
+    }
+    const workspace = workspaceRows[0];
+
+    // Check user access
+    const [accessRows] = await pool.query(
+      "SELECT * FROM User_Workspace WHERE workspaceID = ? AND userID = ?",
+      [workspaceID, req.user.userID]
+    );
+    if (accessRows.length === 0) {
+      return res.status(403).redirect("/workspaces");
+    }
+
+    // Fetch user's groups in this workspace
+    const [groups] = await pool.query(`
+      SELECT g.* FROM \`Group\` g
+      JOIN User_Group ug ON g.groupID = ug.groupID
+      WHERE g.workspaceID = ? AND ug.userID = ?
+      ORDER BY g.createdAt DESC
+    `, [workspaceID, req.user.userID]);
+
+    res.render("user_workspace", { workspace, groups });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
 module.exports = router;

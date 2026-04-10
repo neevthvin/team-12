@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head2') %>
+
+<body class="user-workspace-page">
+  <%- include('includes/header') %>
+
+  <main class="user-workspace-layout">
+
+    <!-- LEFT PANEL-->
+    <section class="user-workspace-left">
+      <h2>Groups in <%= workspace.workspaceName %></h2>
+
+      <% if (!groups || groups.length === 0) { %>
+        <p class="no-groups">No groups yet. Create one to get started!</p>
+      <% } else { %>
+        <% groups.forEach(group => { %>
+          <div class="group-card">
+            <div class="group-title"><%= group.groupName %></div>
+            <div class="group-owner">Owner: <%= group.ownerName %></div>
+            <div class="group-meta">Created: <%= new Date(group.createdAt).toLocaleDateString() %></div>
+          </div>
+        <% }) %>
+      <% } %>
+    </section>
+
+    <!-- RIGHT PANEL-->
+    <section class="user-workspace-right">
+      <div class="user-workspace-right-inner">
+
+        <h2>Quick Actions</h2>
+
+        <div class="workspace-actions-buttons">
+          <a href="/groups/create?workspaceID=<%= workspace.workspaceID %>" class="btn-create" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">Create Group</a>
+          <a href="/workspaces/<%= workspace.workspaceID %>/members" class="btn-secondary">View Members</a>
+          <a href="/workspaces/<%= workspace.workspaceID %>/chat" class="btn-secondary">Chat</a>
+          <a href="#join-group-modal" class="btn-secondary" onclick="document.getElementById('join-group-modal').style.display='block'">Join Group</a>
+        </div>
+
+        <!-- Workspace Code Display -->
+        <div class="workspace-code-section">
+          <h3>Workspace Code</h3>
+          <div class="form-group">
+            <div class="workspace-code-display">
+              <strong><%= workspace.joinCode || 'No code set' %></strong>
+            </div>
+          </div>
+        </div>
+
+        <a href="/workspaces" class="back-link">< Back to Dashboard</a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Simple Modal for Join Group -->
+  <div id="join-group-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+      <h3>Join Group</h3>
+      <p>Placeholder: Select or enter group join code.</p>
+    </div>
+  </div>
+
+</body>
+</html>

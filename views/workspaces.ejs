@@ -1,44 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('includes/head') %>
+<%- include('includes/head2') %>
 
-<body class="workspace-page">
-<%- include('includes/header') %>
+<body class="user-workspace-page">
+  <%- include('includes/header') %>
 
-<main class="workspace-layout">
+  <main class="user-workspace-layout">
 
-  <!-- LEFT PANEL -->
-  <section class="workspace-left">
-    <h2>Your Workspaces</h2>
+    <!-- LEFT PANEL -->
+    <section class="user-workspace-left">
+      <h2>Your Workspaces</h2>
 
-    <% if (workspaces.length === 0) { %>
-      <p>No workspaces yet.</p>
-    <% } %>
+      <% if (!workspaces || workspaces.length === 0) { %>
+        <p class="no-groups">No workspaces yet. Create one to get started!</p>
+      <% } else { %>
+        <% workspaces.forEach(workspace => { %>
+          <a href="/workspaces/<%= workspace.workspaceID %>" class="workspace-link">
+            <div class="group-card">
+              <div class="group-title"><%= workspace.workspaceName %></div>
+              <div class="group-owner">Code: <%= workspace.joinCode %></div>
+              <div class="group-meta">Owner: <%= workspace.ownerName || 'You' %></div>
+            </div>
+          </a>
+        <% }) %>
+      <% } %>
+    </section>
 
-    <% workspaces.forEach(workspace => { %>
-      <div class="workspace-card">
-        <div class="workspace-title"><%= workspace.workspaceName %></div>
-        <div class="workspace-code">Code: <%= workspace.joinCode %></div>
+    <!-- RIGHT PANEL -->
+    <section class="user-workspace-right">
+      <div class="user-workspace-right-inner">
+
+        <h2>Quick Actions</h2>
+
+        <div class="workspace-actions-buttons" style="display: flex; flex-direction: column; gap: 12px;">
+          <a href="/workspaces/create" class="btn-create" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">Create Workspace</a>
+          <a href="/workspaces/join-page" class="btn-secondary">Join Workspace</a>
+        </div>
+
+
+
       </div>
-    <% }) %>
-  </section>
+    </section>
 
-  <!-- RIGHT PANEL -->
-  <section class="workspace-right">
-    <div class="workspace-right-inner">
-
-      <h2>Enter a New Workspace</h2>
-
-      <div class="workspace-entry-buttons">
-        <a href="/workspaces/create" class="btn-yellow">Create Workspace</a>
-        <span class="or-text">Or</span>
-        <a href="/workspaces/join-page" class="btn-dark">Join Workspace</a>
-      </div>
-
-    </div>
-  </section>
-
-</main>
+  </main>
 
 </body>
 </html>
