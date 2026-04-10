@@ -4,7 +4,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    /* the base styles */
     font-family: 'Geologica', sans-serif;
     overflow-x: hidden;
     background: #FFFCFB;
@@ -16,37 +15,30 @@ body {
     background: #FFFCFB;
     display: flex;
     align-items: center;
-    /* include space between logo and button */
     justify-content: space-between;
     padding: 0 46px;
-     position: sticky;
+    position: sticky;
     top: 0;
     z-index: 10;
-    /* transition for both scroll and hide effects */
     transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1), border-radius 0.4s ease;
 }
 
-/* header invisible when scrolled down */
 .header.hidden {
     transform: translateY(-110%);
 }
 
-/* rounding corners when scrolled */
-.header.scrolled 
-{
+.header.scrolled {
     border-radius: 22px;
 }
 
-.logo 
-{
+.logo {
     width: 180px;
     height: 50px;
     object-fit: contain;
 }
 
-.signinBut 
-{
-     font-family: 'Geologica', sans-serif;
+.signinBut {
+    font-family: 'Geologica', sans-serif;
     font-size: 16px;
     font-weight: 700;
     color: #FFF5FA;
@@ -57,15 +49,12 @@ body {
     transition: color 0.5s ease, background 0.4s ease !important;
 }
 
-.signinBut:hover 
-{
+.signinBut:hover {
     color: rgb(215, 205, 210) !important;
     background: linear-gradient(to right, #d22d82, #533b78) !important;
 }
 
-/* "Get Started" button */
-.getstarted 
-{
+.getstarted {
     font-family: 'Geologica', sans-serif;
     font-size: 18px;
     font-weight: 600;
@@ -75,26 +64,22 @@ body {
     border-radius: 15px;
     padding: 10px 16px;
     text-decoration: none;
-    display:  inline-block;
+    display: inline-block;
     letter-spacing: 0.4px;
     position: relative;
     z-index: 5;
 }
 
-/* section with flower and green background */
-.headline 
-{
+.headline {
     width: 100%;
     height: 758px;
-    position:  relative;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding-top: 20px;
     overflow: hidden;
-
-    /* gradient overlayed on green gradient image, reduces blurriness */
     background:
     radial-gradient(ellipse 100% 33% at 52% 1%, #5EA882 0%, transparent 60%),
     radial-gradient(ellipse 70% 25% at 30% 0%, #5AA075 0%, transparent 55%),
@@ -112,7 +97,6 @@ body {
     linear-gradient(150deg, #1F6D60 0%, #2A7868 20%, #327A68 40%, #2B7B63 60%, #257365 80%, #1F6D60 100%);
 }
 
-/* green gradient on transparent overlayed on top */
 .headline::after {
     content: '';
     position: absolute;
@@ -125,21 +109,19 @@ body {
     z-index: 1;
 }
 
-/* grain put on gradient image and css radial gradients */
-.headline::before 
-{
+.headline::before {
     content: '';
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
     background-repeat: repeat;
-    background-size:  200px 200px;
+    background-size: 200px 200px;
     opacity: 0.3;
     mix-blend-mode: overlay;
     pointer-events: none;
     z-index: 2;
 }
-/* text in the green section with flower */
+
 .headline-text {
     display: flex;
     flex-direction: column;
@@ -149,49 +131,43 @@ body {
     position: relative;
     z-index: 6;
 }
-/* "Groupify" */
-.headlineTitle 
-{
+
+.headlineTitle {
     font-size: 100px;
     font-weight: 700;
     color: #FFF5FA;
     line-height: 1;
     letter-spacing: -2px;
 }
-/* "Work effectively and smarter with people at your side." */
-.headline-under 
-{
+
+.headline-under {
     font-size: 20px;
     font-weight: 400;
     color: #FFF5FA;
     max-width: 800px;
 }
 
-.getstarted::after 
-{
+.getstarted::after {
     content: '';
     position: absolute;
     inset: 0;
-    background:  linear-gradient(to right, #7e3d81, #462d6c);
+    background: linear-gradient(to right, #7e3d81, #462d6c);
     opacity: 0;
     transition: opacity 0.74s ease;
     border-radius: 15px;
     z-index: -1;
 }
-.getstarted:hover 
-{
+
+.getstarted:hover {
     color: rgb(232, 222, 227);
 }
 
-/* doing a fade for yellow transition */
-.getstarted:hover::after 
-{
+.getstarted:hover::after {
     opacity: 50 !important;
 }
 
-/* container for leaves */
 .leaves-Container {
-    position:  relative;
+    position: relative;
     width: 100%;
     height: 0;
     z-index: 5;
@@ -200,20 +176,16 @@ body {
 .leaves {
     position: absolute;
     left: 50%;
-    /* overlap onto both green and pink sections */
     top: -50px;
-    /* so it does not get in way of flower */
-    transform:  translateX(-55%);
+    transform: translateX(-55%);
     width: 200px;
 }
 
-/* Container for flower */
 .flower-container {
     position: relative;
     width: 684px;
     height: 602px;
     margin-top: 18px;
-
     z-index: 2;
     transform: scale(0.88);
     transform-origin: top center;
@@ -222,118 +194,61 @@ body {
 .flowerLayer {
     position: absolute;
     display: block;
-    /* done for gpu performance */
     will-change: transform;
 }
-/* different parts of the flower */
-/* positions and width/height taken exactly from figma */
-.stem {
-    left: 238px;
-    top: 303px;
-    width:  217px;
-    height: 299px;
-    z-index: 1;
-}
 
-/* flower bulb, but back layer */
-.backbulb {
-    left: 132.67px;
-    top: 0px;
-    width: 443px;
-    height: 264.11px;
-    z-index: 2;
-}
+.stem { left: 238px; top: 303px; width: 217px; height: 299px; z-index: 1; }
+.backbulb { left: 132.67px; top: 0px; width: 443px; height: 264.11px; z-index: 2; }
+.frontbulb { left: 143.01px; top: 10.96px; width: 407.75px; height: 381.61px; z-index: 4; }
 
-/* flower bulb, but front layer */
-.frontbulb {
-    left: 143.01px;
-    top: 10.96px;
-    width: 407.75px;
-    height: 381.61px;
-    z-index: 4;
-}
-
-/* top petal on the outer left */
 .leftTop {
     transform: rotate(6deg);
-    left: -10px;
-    top: 120px;
-    width: 300px;
-    height: 220px;
-    z-index: 3;
+    left: -10px; top: 120px; width: 300px; height: 220px; z-index: 3;
     transform-origin: right bottom;
     animation: swayLeftTop 3.9s ease-in-out infinite alternate;
     animation-delay: 0.2s;
 }
-/* top petal on the outer right */
+
 .rightTop {
     transform: rotate(-6deg);
-    left: 395px;
-    top: 120px;
-    width: 300px;
-    height: 220px;
-    z-index: 3;
+    left: 395px; top: 120px; width: 300px; height: 220px; z-index: 3;
     transform-origin: left bottom;
     animation: swayRightTop 3.8s ease-in-out infinite alternate;
     animation-delay: 0.2s;
 }
-/* lowest petal on the outer left */
+
 .leftLower {
-    left: 0px;
-    top: 335px;
-    width: 323px;
-    height: 147px;
-    z-index: 5;
+    left: 0px; top: 335px; width: 323px; height: 147px; z-index: 5;
     transform-origin: right center;
     animation: swayLeft 4.0s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
 }
-/* lowest petal on the outer right  */
+
 .rightLower {
-    left: 361px;
-    top: 335px;
-    width: 323px;
-    height: 147px;
-    z-index: 5;
+    left: 361px; top: 335px; width: 323px; height: 147px; z-index: 5;
     transform-origin: left center;
     animation: swayRight 3.8s ease-in-out infinite alternate;
 }
 
-/* petal on the outer left, in the middle */
 .leftMiddle {
-    left: 100px;
-    top: 170px;
-    width: 210px;
-    height: 220px;
-    z-index: 6;
+    left: 100px; top: 170px; width: 210px; height: 220px; z-index: 6;
     transform-origin: right bottom;
     animation: swayLeft 3.7s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
     animation-delay: 0.2s;
 }
-/* petal on the outer right, in the middle */
+
 .rightMiddle {
-    left: 380px;
-    top: 170px;
-    width: 210px;
-    height: 220px;
-    z-index: 6;
+    left: 380px; top: 170px; width: 210px; height: 220px; z-index: 6;
     transform-origin: left bottom;
     animation: swayRight 3.7s ease-in-out infinite alternate;
     animation-delay: 0.2s;
 }
 
-/* petal in middle that is symmetrical, animated to go up and down */
 .middlePetal {
-    left: 207px;
-    top: 293px;
-    width: 278px;
-    height: 117px;
-    z-index: 7;
+    left: 207px; top: 293px; width: 278px; height: 117px; z-index: 7;
     transform-origin: center bottom;
     animation: middlePetalFloat 5.0s ease-in-out infinite alternate;
 }
-/* end of flower building */
 
-/* animations for petals using keyframes */
 @keyframes swayLeft {
     0%   { transform: rotate(0deg) scaleY(1); }
     30%  { transform: rotate(-2deg) scaleY(1.03); }
@@ -349,8 +264,8 @@ body {
 }
 
 @keyframes swayLeftTop {
-    0%   { transform: rotate(6deg)  scaleY(1); }
-    100% { transform: rotate(3deg)  scaleY(1.04); }
+    0%   { transform: rotate(6deg) scaleY(1); }
+    100% { transform: rotate(3deg) scaleY(1.04); }
 }
 
 @keyframes swayRightTop {
@@ -366,7 +281,6 @@ body {
     100% { transform: translateY(0) rotate(0deg) scaleY(1); }
 }
 
-/* section of website with the pink gradient background */
 .pinkSection {
     width: 100%;
     background: url('/images/pinkGradient.webp');
@@ -378,160 +292,70 @@ body {
     gap: 48px;
     overflow: hidden;
     position: relative;
-    background-size: cover;
     background-position: center;
 }
 
 .pinkSectionTitle {
-    font-size: 42px;
-    font-weight: 900;
-    color: #FFF5FA;
-    text-align: center;
-    width: 100%;
-    line-height: 1.2;
-    padding: 0 2rem;
-    position: relative;
-    z-index: 1;
+    font-size: 42px; font-weight: 900; color: #FFF5FA;
+    text-align: center; width: 100%; line-height: 1.2;
+    padding: 0 2rem; position: relative; z-index: 1;
 }
 
-.pinkSectionBody {
-    display: flex;
-    width: 100%;
-    position: relative;
-    z-index: 1;
-}
+.pinkSectionBody { display: flex; width: 100%; position: relative; z-index: 1; }
 
 .footer {
-    width: 100%;
-    height: 148px;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border-top: 1px solid #eee;
+    width: 100%; height: 148px; background: #fff;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px; border-top: 1px solid #eee;
 }
 
-.footerLogo {
-    width: 131px;
-    height: 42px;
-    object-fit: contain;
-}
+.footerLogo { width: 131px; height: 42px; object-fit: contain; }
+.copyright { font-size: 16px; font-weight: 200; color: #164D47; }
 
-.copyright {
-    font-size: 16px;
-    font-weight: 200;
-    color: #164D47;
-}
+.pinkSectionCards { flex: 1; display: flex; flex-direction: column; gap: 18px; }
 
-.pinkSectionCards {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-/* 3 cards that have illustrations */
 .card {
-    width: 100%;
-    min-height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 27%;
-    padding-right: 4%;
-    opacity: 0;
-    position: relative;
+    width: 100%; min-height: 150px; display: flex; align-items: center;
+    justify-content: flex-start; padding-left: 27%; padding-right: 4%;
+    opacity: 0; position: relative;
 }
 
-/* card 2 is reversed */
-.card.card2 {
-    justify-content: flex-end;
-    padding-left: 4%;
-    padding-right: 27%;
-}
-
-.illustration {
-    width: 110px;
-    height: 110px;
-    object-fit: contain !important;
-}
+.card.card2 { justify-content: flex-end; padding-left: 4%; padding-right: 27%; }
+.illustration { width: 110px; height: 110px; object-fit: contain !important; }
 
 .card::before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0;
-    width: 75%;
-    height: 100%;
-    border-radius: 72px 0 0 72px;
-    z-index: 0;
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 75%; height: 100%; border-radius: 72px 0 0 72px; z-index: 0;
 }
 
-.card.card2::before {
-    right: auto;
-    left: 0;
-    border-radius: 0 72px 72px 0;
-}
-
+.card.card2::before { right: auto; left: 0; border-radius: 0 72px 72px 0; }
 .card1::before { background: linear-gradient(to right, rgba(121,13,95,0.72), rgba(116,17,121,0.72)); }
 .card2::before { background: linear-gradient(to right, rgba(59,17,121,0.72), rgba(147,48,113,0.72)); }
 .card3::before { background: linear-gradient(to right, rgba(46,89,93,0.72), rgba(116,14,109,0.72)); }
 
 .cardInner {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    padding: 24px 0;
+    position: relative; z-index: 1; display: flex;
+    align-items: center; gap: 28px; padding: 24px 0;
 }
 
-.card.card2 .cardInner {
-    flex-direction: row;
-}
+.card.card2 .cardInner { flex-direction: row; }
+.textInCard { font-size: 24px; font-weight: 600; color: #FFF5FA; line-height: 1.3; }
 
-.textInCard {
-    font-size: 24px;
-    font-weight: 600;
-    color: #FFF5FA;
-    line-height: 1.3;
-}
+img { -webkit-user-drag: none; user-select: none; }
 
-/* Images cannot be dragged by mouse */
-img {
-    -webkit-user-drag: none;
-    user-select: none;
-}
-
-/* bee following mouse (open source code frm youtube) */
 .beeWrap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 4;
-    pointer-events: none;
+    position: absolute; top: 0; left: 0; z-index: 4; pointer-events: none;
     transform: translate3d(var(--mouseX, -500px), var(--mouseY, -500px), 0) translate(-50%, -50%);
 }
 
-.beeInner {
-    transition: transform 0.28s ease;
-}
-
-/* mirror bee when cursor moves left */
-.beeWrap.flipped .beeInner {
-    transform: scaleX(-1);
-}
+.beeInner { transition: transform 0.28s ease; }
+.beeWrap.flipped .beeInner { transform: scaleX(-1); }
 
 .beeCursor {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    display: block;
+    width: 60px; height: 60px; object-fit: contain; display: block;
     animation: beeFloat 2.8s ease-in-out infinite;
 }
 
-/* added animation for bee to bounce */
 @keyframes beeFloat {
     0%   { transform: translateY(0px)   rotate(-4deg); }
     25%  { transform: translateY(-8px)  rotate(3deg);  }
@@ -540,170 +364,404 @@ img {
     100% { transform: translateY(0px)   rotate(-4deg); }
 }
 
-/* hidden for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) { .beeWrap { display: none; } }
-/* unavailable for touch screen */
 @media (pointer: coarse)               { .beeWrap { display: none; } }
 
-/* Sign In and Sign Up styles */
-
 .authPage {
-    background: #FFFCFB;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start; 
-    justify-content: center;
-    padding-top: 48px;
+    background: #FFFCFB; min-height: 100vh;
+    display: flex; align-items: flex-start; justify-content: center; padding-top: 48px;
 }
 
 .authContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 48px;
-    width: 100%;
-    max-width: 500px;
-    padding: 0 8px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 48px; width: 100%; max-width: 500px; padding: 0 8px;
 }
 
-.authLogo {
-    width: 180px;
-    object-fit: contain;
-    padding-right: 3px;
-}
+.authLogo { width: 180px; object-fit: contain; padding-right: 3px; }
 
 .authTitle {
-    font-family: 'Geologica', sans-serif;
-    font-size: 38px;
-    font-weight: 800;
-    color: #180D2A;
-    margin-top: 10px;
+    font-family: 'Geologica', sans-serif; font-size: 38px;
+    font-weight: 800; color: #180D2A; margin-top: 10px;
 }
 
 .authFormBox {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 20px;
+    width: 100%; display: flex; flex-direction: column;
+    align-items: stretch; gap: 20px;
 }
 
 .authuserInput {
-    font-family: 'Geologica', sans-serif;
-    font-size: 18px;
-    color: #180D2A;
-    background: #FFFCFB;
-    border: 1.5px solid #d6cfe8;
-    border-radius: 20px;
-    padding: 14px 24px;
-    outline: none;
-    width: 100%;
-    font-weight: 400;
+    font-family: 'Geologica', sans-serif; font-size: 18px; color: #180D2A;
+    background: #FFFCFB; border: 1.5px solid #d6cfe8; border-radius: 20px;
+    padding: 14px 24px; outline: none; width: 100%; font-weight: 400;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.authuserInput::placeholder {
-    color: #B7B1D1;
-}
+.authuserInput::placeholder { color: #B7B1D1; }
 
-/* outline when user input box is clicked */
 .authuserInput:focus {
     border-color: #d6cfe8;
     box-shadow: 0 0 0 4px #E7E4F3;
 }
 
 .forgotPassword {
-    font-family: 'Geologica', sans-serif;
-    font-size: 15px;
-    color: #D84592;
-    text-decoration: none;
-    text-align: right;
-    align-self: flex-end;  
-    font-weight: 400;
-    margin-top: -7px;
+    font-family: 'Geologica', sans-serif; font-size: 15px; color: #D84592;
+    text-decoration: none; text-align: right; align-self: flex-end;
+    font-weight: 400; margin-top: -7px;
 }
 
-.forgotPassword:hover {
-    text-decoration: underline;
-}
+.forgotPassword:hover { text-decoration: underline; }
 
 .authButton {
-    font-family: 'Geologica', sans-serif;
-    align-self: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: #FFFCFB;
-    border: none;
-    border-radius: 15px;
-    padding: 14px 54px;
-    cursor: pointer;
-    margin-top: 8px;
-    position: relative;
-    background: transparent;
-    isolation: isolate;
+    font-family: 'Geologica', sans-serif; align-self: center; font-size: 16px;
+    font-weight: 700; color: #FFFCFB; border: none; border-radius: 15px;
+    padding: 14px 54px; cursor: pointer; margin-top: 8px;
+    position: relative; background: transparent; isolation: isolate;
 }
 
 .authButton::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(to right, #E2308D, #5C4185);
-    border-radius: 15px;
-    z-index: -1;
-    transition: opacity 0.3s ease;
+    border-radius: 15px; z-index: -1; transition: opacity 0.3s ease;
 }
 
-.authButton::after 
-{
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:  linear-gradient(to right,rgb(73, 144, 149), #1c664a);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 15px;
-    z-index: -1;
-}
-.authButton:hover 
-{
-    color: rgb(234, 224, 229);
+.authButton::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to right, rgb(73, 144, 149), #1c664a);
+    opacity: 0; transition: opacity 0.3s ease; border-radius: 15px; z-index: -1;
 }
 
-.authButton:hover::after {
-    opacity: 1;
-}
+.authButton:hover { color: rgb(234, 224, 229); }
+.authButton:hover::after { opacity: 1; }
 
 .authError {
+    font-family: 'Geologica', sans-serif; font-size: 16px;
+    color: #D84592; text-align: center;
+}
+
+.account { font-family: 'Geologica', sans-serif; font-size: 18px; color: #413457; font-weight: 400; }
+.linktoAuth { color: #D84592; text-decoration: none; font-weight: 400; }
+.linktoAuth:hover { text-decoration: underline; }
+.forgotpassSub { font-family: 'Geologica', sans-serif; font-size: 16px; color: #483a61; text-align: center; }
+.line { color: #E7E4F3; margin: 0 8px; }
+
+/* ── CREATE WORKSPACE PAGE ── */
+
+.create-workspace-page {
+    min-height: calc(100vh - 60px);
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.create-workspace-card {
+    background: #2a2a2a;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.create-workspace-card h1 {
+    font-family: 'Geologica', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-align: center;
+    margin: 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-family: 'Geologica', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #aaaaaa;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.form-group input,
+.form-group textarea {
+    font-family: 'Geologica', sans-serif;
+    background: #3a3a3a;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-size: 15px;
+    outline: none;
+    width: 100%;
+    transition: box-shadow 0.2s ease;
+    margin: 0;
+}
+
+.form-group textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #666666;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    box-shadow: 0 0 0 2px #E2308D;
+}
+
+.form-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group input[type="date"] {
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.btn-create {
     font-family: 'Geologica', sans-serif;
     font-size: 16px;
-    color: #D84592;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(to right, #E2308D, #5C4185);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    width: 100%;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    margin: 0;
+}
+
+.btn-create:hover { opacity: 0.88; }
+
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.error-list li {
+    font-family: 'Geologica', sans-serif;
+    font-size: 14px;
+    color: #E2308D;
     text-align: center;
 }
 
-.account {
+.back-link {
     font-family: 'Geologica', sans-serif;
-    font-size: 18px;
-    color: #413457;
-    font-weight: 400;
-}
-
-.linktoAuth {
-    color: #D84592;
+    font-size: 14px;
+    color: #aaaaaa;
+    text-align: center;
     text-decoration: none;
-    font-weight: 400;
+    display: block;
 }
 
-.linktoAuth:hover {
-    text-decoration: underline;
+.back-link:hover { color: #ffffff; }
+
+/* ── WEEKLY AVAILABILITY PAGE ── */
+
+.availability-page {
+    min-height: calc(100vh - 60px);
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
 }
 
-.forgotpassSub{
+.availability-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.availability-card h1 {
     font-family: 'Geologica', sans-serif;
-    font-size: 16px;
-    color: #483a61;
+    font-size: 28px;
+    font-weight: 900;
+    color: #111111;
     text-align: center;
+    margin: 0;
 }
-.line {
-    color: #E7E4F3;
-    margin: 0 8px;
+
+.availability-hint {
+    font-family: 'Geologica', sans-serif;
+    font-size: 14px;
+    color: #444444;
+    background: #f0f0f0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    text-align: center;
+    margin: 0;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+}
+
+.step {
+    font-family: 'Geologica', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaaaaa;
+    text-align: center;
+    flex: 1;
+    padding-bottom: 8px;
+    border-bottom: 3px solid #dddddd;
+}
+
+.step.done { color: #111111; border-bottom-color: #111111; }
+.step.active { color: #E2308D; border-bottom-color: #E2308D; }
+
+.availability-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.availability-table th {
+    font-family: 'Geologica', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111111;
+    text-align: left;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #eeeeee;
+}
+
+.availability-table td {
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 1px solid #eeeeee;
+    font-family: 'Geologica', sans-serif;
+    font-size: 14px;
+    color: #111111;
+    background: transparent;
+}
+
+.availability-table tr:nth-child(2n) { background: transparent; }
+
+.day-toggle {
+    width: 36px;
+    height: 20px;
+    appearance: none;
+    background: #cccccc;
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    margin: 0;
+}
+
+.day-toggle::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #ffffff;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: left 0.2s ease;
+}
+
+.day-toggle:checked { background: #111111; }
+.day-toggle:checked::after { left: 18px; }
+
+.time-select {
+    font-family: 'Geologica', sans-serif;
+    font-size: 13px;
+    color: #111111;
+    background: #f5f5f5;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.time-select:disabled { color: #aaaaaa; cursor: not-allowed; }
+
+.availability-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.availability-actions .btn-create { max-width: 240px; }
+
+.skip-link {
+    font-family: 'Geologica', sans-serif;
+    font-size: 14px;
+    color: #888888;
+    text-decoration: none;
+}
+
+.skip-link:hover { color: #111111; }
+
+/* ── JOIN WORKSPACE PAGE ── */
+
+.join-workspace-page {
+    min-height: calc(100vh - 60px);
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.join-workspace-card {
+    background: #2a2a2a;
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.join-workspace-card h1 {
+    font-family: 'Geologica', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-align: center;
+    margin: 0;
 }
