@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const pool = require("../config/db");
 
 // middleware to attach user info to req.user if logged in, if not set to null
 async function attachUser(req, res, next) {
@@ -14,6 +15,19 @@ async function attachUser(req, res, next) {
             userID: decoded.userID,
             username: decoded.username
         };
+
+        // fetch profile picture
+        try {
+            const [profileRows] = await pool.query(
+                "SELECT profilePicture FROM user_profile WHERE userID = ?",
+                [decoded.userID]
+            );
+            if (profileRows.length > 0) {
+                req.user.profilePicture = profileRows[0].profilePicture;
+            }
+        } catch (err) {
+            console.error("Error fetching profile picture:", err);
+        }
     } catch (err) {
         req.user = null;
     }

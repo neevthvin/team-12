@@ -1,93 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('includes/head') %>
+  <%- include('includes/head2') %>
+  <link rel="stylesheet" href="/profile.css" />
   <body>
     <%- include('includes/header') %>
 
     <main class="profile-page">
       <section class="profile-card">
-        <div class="profile-header-row">
-          <div class="profile-image-block">
-            <img
-              id="profilePicturePreview"
-              src=""
-              alt="Profile picture"
-              width="120"
-              height="120"
-            />
-            <input id="profilePictureInput" name="profilePicture" type="file" accept="image/*" hidden />
-            <button type="button" id="changePhotoBtn">Change Photo</button>
-            <p id="pictureStatus"></p>
-          </div>
 
-          <div class="profile-title-block">
-            <h1 id="displayNameText">Display Name</h1>
-            <p id="currentRoleText">Current Role</p>
-            <p id="organizationText">Organization</p>
-          </div>
-        </div>
+        <div class="profile-content">
+          <div class="profile-header-section">
+            <div class="profile-image-block">
+              <img
+                id="profilePicturePreview"
+                src=""
+                alt="Profile picture"
+                class="profile-picture"
+              />
+              <input id="profilePictureInput" name="profilePicture" type="file" accept="image/*" hidden />
+              <button type="button" id="changePhotoBtn" class="change-photo-btn edit-mode">Change Photo</button>
+              <p id="pictureStatus" class="status-text"></p>
+            </div>
 
-        <section class="profile-info-box">
-          <div class="section-title-row">
-            <h3>Profile Information</h3>
+            <div class="profile-title-block">
+              <h1 id="displayNameText" class="display-name">Display Name</h1>
+              <p id="currentRoleText" class="current-role"><span class="icon">💼</span> Current Role</p>
+              <p id="organizationText" class="organization"><span class="icon">🏢</span> Organization</p>
+            </div>
           </div>
 
           <form id="profileForm" class="profile-info-form">
-            <div>
+            <div class="form-section edit-mode" style="display: none;">
               <label for="displayName">Display Name</label>
               <input id="displayName" name="displayName" type="text" maxlength="80" />
             </div>
 
-            <div class="two-col-grid">
-              <div>
+            <div class="form-row edit-mode" style="display: none;">
+              <div class="form-section">
                 <label for="currentRole">Current Role</label>
                 <input id="currentRole" name="currentRole" type="text" maxlength="80" />
               </div>
 
-              <div>
+              <div class="form-section">
                 <label for="organization">Organization</label>
                 <input id="organization" name="organization" type="text" maxlength="120" />
               </div>
             </div>
 
-            <div>
-              <label for="bio">Short Bio</label>
-              <textarea id="bio" name="bio" rows="3" maxlength="150"></textarea>
-              <p id="bioCount">0/150</p>
-            </div>
+            <div class="bio-section">
+              <div id="bioView" class="bio-box">
+                <h3>Short Bio</h3>
+                <p id="bioViewText" class="bio-text"></p>
+              </div>
 
-            <div class="save-row">
-              <button type="submit" id="saveProfileBtn">Save</button>
+              <div class="form-section edit-mode" style="display: none;">
+                <label for="bio">Short Bio</label>
+                <textarea id="bio" name="bio" rows="3" maxlength="150"></textarea>
+                <p id="bioCount" class="char-count">0/150</p>
+              </div>
             </div>
           </form>
-        </section>
 
-        <div class="profile-bottom-grid">
-          <div>
-            <h3>Skills</h3>
-
-            <div class="skill-input-row">
-              <input id="newSkillInput" type="text" placeholder="Enter skills" maxlength="40" />
-              <button type="button" id="addSkillBtn">Add</button>
+          <div class="profile-grid">
+          <div class="profile-section">
+              <h3>Skills</h3>
+              <div id="skillsList" class="skill-pills view-mode"></div>
+              <div class="skill-input-row edit-mode" style="display: none;">
+                <input id="newSkillInput" type="text" placeholder="Enter skills" maxlength="40" />
+                <button type="button" id="addSkillBtn" class="add-btn">Add</button>
+              </div>
+              <button type="button" id="updateSkillsBtn" class="action-btn edit-mode" style="display: none;">Update Skills</button>
             </div>
 
-            <div id="skillsList" class="skill-pills"></div>
-            <button type="button" id="updateSkillsBtn">Update Skills</button>
+            <div class="profile-section">
+              <h3>Availability</h3>
+              <div id="availabilityList" class="availability-list"></div>
+            </div>
           </div>
 
-          <div>
-            <h3>Availability</h3>
-            <div id="availabilityList"></div>
-            <button type="button" id="updateAvailabilityBtn">Edit Availability</button>
+          <div class="profile-actions">
+            <button type="submit" id="saveProfileBtn" class="save-btn">Save</button>
+            <button type="button" id="editProfileBtn" class="edit-btn">Edit Profile</button>
           </div>
-        </div>
 
-        <div class="profile-actions">
-          <button type="button" id="editProfileBtn">Edit Profile</button>
+          <p id="profileStatus" class="status-text"></p>
+          <p id="skillsStatus" class="status-text"></p>
         </div>
-
-        <p id="profileStatus"></p>
-        <p id="skillsStatus"></p>
       </section>
     </main>
 

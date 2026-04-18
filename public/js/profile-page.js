@@ -12,6 +12,8 @@ const organizationInput = document.getElementById("organization");
 const currentRoleInput = document.getElementById("currentRole");
 const bioInput = document.getElementById("bio");
 const bioCount = document.getElementById("bioCount");
+const bioViewText = document.getElementById("bioViewText");
+const bioView = document.getElementById("bioView");
 
 const profileForm = document.getElementById("profileForm");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
@@ -85,6 +87,38 @@ function setEditableState(editable) {
   updateSkillsBtn.disabled = !editable;
   saveProfileBtn.disabled = !editable;
 
+  // Toggle visibility of form elements
+  const editModeElements = document.querySelectorAll(".edit-mode");
+  editModeElements.forEach((el) => {
+    if (editable) {
+      el.style.display = el.classList.contains("form-row") ? "grid" : "block";
+    } else {
+      el.style.display = "none";
+    }
+  });
+
+  // Toggle bio view visibility
+  bioView.style.display = editable ? "none" : "flex";
+
+  // Toggle save button visibility
+  if (saveProfileBtn) {
+    if (editable) {
+      saveProfileBtn.classList.add("visible");
+    } else {
+      saveProfileBtn.classList.remove("visible");
+    }
+  }
+
+  // Toggle skill input row and button
+  const skillInputRow = document.querySelector(".skill-input-row");
+  const skillUpdateBtn = document.getElementById("updateSkillsBtn");
+  if (skillInputRow) {
+    skillInputRow.style.display = editable ? "flex" : "none";
+  }
+  if (skillUpdateBtn) {
+    skillUpdateBtn.style.display = editable ? "block" : "none";
+  }
+
   editProfileBtn.textContent = editable ? "Cancel" : "Edit Profile";
   renderSkills();
 }
@@ -95,6 +129,7 @@ function renderSkills() {
   if (currentSkills.length === 0) {
     const empty = document.createElement("p");
     empty.textContent = "No skills added yet.";
+    empty.style.color = "#999";
     skillsList.appendChild(empty);
     return;
   }
@@ -102,6 +137,9 @@ function renderSkills() {
   currentSkills.forEach((skill, index) => {
     const pill = document.createElement("span");
     pill.className = "skill-pill";
+    if (!isEditing) {
+      pill.classList.add("view-mode");
+    }
 
     const textNode = document.createElement("span");
     textNode.textContent = skill;
@@ -130,14 +168,26 @@ function renderAvailability(availability) {
   if (days.length === 0) {
     const empty = document.createElement("p");
     empty.textContent = "No availability saved yet.";
+    empty.style.color = "#999";
     availabilityList.appendChild(empty);
     return;
   }
 
   days.forEach((day) => {
     const value = availability[day] || [];
-    const row = document.createElement("p");
-    row.textContent = `${day}  ${formatTime(value[0])} - ${formatTime(value[1])}`;
+    const row = document.createElement("div");
+    row.className = "availability-row";
+
+    const dayLabel = document.createElement("span");
+    dayLabel.className = "availability-day";
+    dayLabel.textContent = day;
+
+    const timeLabel = document.createElement("span");
+    timeLabel.className = "availability-time";
+    timeLabel.textContent = `${formatTime(value[0])} - ${formatTime(value[1])}`;
+
+    row.appendChild(dayLabel);
+    row.appendChild(timeLabel);
     availabilityList.appendChild(row);
   });
 }
@@ -152,6 +202,9 @@ function setProfileFields(data) {
   organizationInput.value = data.organization || "";
   bioInput.value = data.bio || "";
   updateBioCount();
+
+  // Update bio view text
+  bioViewText.textContent = data.bio || "No bio added yet.";
 
   profilePicturePreview.src = data.profilePicture || "";
   pictureStatus.textContent = data.profilePicture ? "" : "No profile picture uploaded yet.";
@@ -171,8 +224,10 @@ async function loadProfile() {
     }
 
     setProfileFields(data);
+    document.querySelector(".profile-content").classList.add("loaded");
   } catch (error) {
     profileStatus.textContent = error.message;
+    document.querySelector(".profile-content").classList.add("loaded");
   }
 }
 
@@ -280,9 +335,11 @@ updateSkillsBtn.addEventListener("click", async () => {
   }
 });
 
-updateAvailabilityBtn.addEventListener("click", () => {
-  window.location.href = "/profile/availability";
-});
+if (updateAvailabilityBtn) {
+  updateAvailabilityBtn.addEventListener("click", () => {
+    window.location.href = "/profile/availability";
+  });
+}
 
 bioInput.addEventListener("input", updateBioCount);
 

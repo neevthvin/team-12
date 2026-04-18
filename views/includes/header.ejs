@@ -4,6 +4,9 @@
   </a>
   <nav>
     <% if (user) { %>
+      <a href="/profile" class="profileBtn">
+        <img src="<%= user.profilePicture || '/images/default-profile.png' %>" alt="Profile" class="profilePicture">
+      </a>
       <a href="/logout" class="signinBut">LOG OUT</a>
     <% } else { %>
       <a href="/signin" class="signinBut">SIGN IN</a>

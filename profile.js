@@ -14,11 +14,11 @@ const upload = multer({
 });
 
 router.get("/", mustBeLoggedIn, (req, res) => {
-  res.render("profile")
+  res.render("Profile")
 })
 
 router.get("/availability", mustBeLoggedIn, (req, res) => {
-  res.render("availabilityEdit")
+  res.render("WeeklyAvailability")
 })
 
 router.get("/data", mustBeLoggedIn, async (req, res) => {
