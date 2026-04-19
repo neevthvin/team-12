@@ -5,54 +5,79 @@
 <body class="user-workspace-page">
   <%- include('includes/header') %>
 
-  <main class="user-workspace-layout">
+  <div class="userWorkPage">
+    <img src="/images/UserWorkspaceBack.webp" alt="" class="userWorkBackground">
+    <main class="userWorkGroupList">
 
-    <!-- LEFT PANEL-->
-    <section class="user-workspace-left">
-      <h2>Groups in <%= workspace.workspaceName %></h2>
-
-      <% if (!groups || groups.length === 0) { %>
-        <p class="no-groups">No groups yet. Create one to get started!</p>
-      <% } else { %>
-        <% groups.forEach(group => { %>
-          <div class="group-card">
-            <div class="group-title"><%= group.groupName %></div>
-            <div class="group-owner">Owner: <%= group.ownerName %></div>
-            <div class="group-meta">Created: <%= new Date(group.createdAt).toLocaleDateString() %></div>
-          </div>
-        <% }) %>
-      <% } %>
-    </section>
-
-    <!-- RIGHT PANEL-->
-    <section class="user-workspace-right">
-      <div class="user-workspace-right-inner">
-
-        <h2>Quick Actions</h2>
-
-        <div class="workspace-actions-buttons">
-          <a href="/groups/create?workspaceID=<%= workspace.workspaceID %>" class="btn-create" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">Create Group</a>
-          <a href="/workspaces/<%= workspace.workspaceID %>/members" class="btn-secondary">View Members</a>
-          <a href="/workspaces/<%= workspace.workspaceID %>/chat" class="btn-secondary">Chat</a>
-          <a href="#join-group-modal" class="btn-secondary" onclick="document.getElementById('join-group-modal').style.display='block'">Join Group</a>
-        </div>
-
-        <!-- Workspace Code Display -->
-        <div class="workspace-code-section">
-          <h3>Workspace Code</h3>
-          <div class="form-group">
-            <div class="workspace-code-display">
-              <strong><%= workspace.joinCode || 'No code set' %></strong>
-            </div>
-          </div>
-        </div>
-
-        <a href="/workspaces" class="back-link">< Back to Dashboard</a>
-
+      <div class="workspacetitleTop">
+        <a href="/workspaces" class="userWorkbackButDimensions">
+          <img src="/images/workspacebackBut.svg" alt="Back" class="userWorkbackBut userWorkbackButNORMAL">
+          <img src="/images/workspacebackHOVER.svg" alt="Back" class="userWorkbackBut userWorkbackButHOVER">
+        </a>
+        <h1 class="workspaceNameTitle"><%= workspace.workspaceName %></h1>
+        <button class="userWorkDropDownDim" onclick="this.classList.toggle('open')">
+          <img src="/images/workspacedropdown.svg" alt="Dropdown" class="userWorkDropDown userWorkDropDownNORMAL">
+          <img src="/images/workspacedropdownHOVER.svg" alt="Dropdown" class="userWorkDropDown userWorkDropDownHOVER">
+          <img src="/images/workspacedropdownCLICKED.svg" alt="Dropdown" class="userWorkDropDown userWorkDropDownCLICKED">
+        </button>
       </div>
-    </section>
 
-  </main>
+      <div class="userWorkContainer">
+
+        <!-- LEFT PANEL -->
+        <section class="userWorkLeft">
+          <h2 class="userWorkYourGroups">Your Groups</h2>
+          <div class="userWorkGroupsList">
+            <% if (!groups || groups.length === 0) { %>
+              <p class="userWorkLeftempty">No groups yet. Create one to get started!</p>
+            <% } else { %>
+              <% groups.forEach(group => { %>
+                <a href="/groups/<%= group.groupID %>" class="userWorkGroups">
+                  <%= group.groupName %>
+                </a>
+              <% }) %>
+            <% } %>
+          </div>
+        </section>
+
+        <!-- RIGHT PANEL -->
+        <section class="userWorkRight">
+
+          <div class="userWorkRightorder">
+            <a href="/workspaces/<%= workspace.workspaceID %>/chat" class="userWorkRightBox">
+              <span class="userWorkChatName">Chat</span>
+              <img src="/images/workspacechat.svg" alt="Chat" class="userWorkGroupchatImg">
+            </a>
+            <a href="/workspaces/<%= workspace.workspaceID %>/members" class="userWorkRightBox">
+              <span class="userWorkViewName">View<br>Members</span>
+              <img src="/images/workspacemembers.svg" alt="View Members" class="userWorkViewMembersImg">
+            </a>
+            <a href="/groups/create?workspaceID=<%= workspace.workspaceID %>" class="userWorkRightBox">
+              <span class="userWorkCreateName">Create<br>Group</span>
+              <img src="/images/creategroup.svg" alt="Create Group" class="userWorkCreateImage">
+            </a>
+          </div>
+
+          <button class="userWorkJoin" onclick="document.getElementById('join-group-modal').style.display='flex'">
+            Join a Group
+          </button>
+
+          <div class="aibuttonrow">
+            <button class="userWork-AI">
+              <img src="/images/aibuttonStars.svg" alt="AI Assistant" class="userWork-AI-stars">
+            </button>
+          </div>
+
+          <div class="userWorkJoinCode">
+            <span class="userWorkJoinCodetitle">Join Code:</span>
+            <span class="userWorkJoinCodeCode"><%= workspace.joinCode || 'No code set' %></span>
+          </div>
+
+        </section>
+      </div>
+
+    </main>
+  </div>
 
   <!-- Simple Modal for Join Group -->
   <div id="join-group-modal" class="modal" style="display:none;">
