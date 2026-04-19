@@ -2,47 +2,61 @@
 <html lang="en">
 <%- include('includes/head2') %>
 
-<body class="user-workspace-page">
+<body class="homepagebody">
   <%- include('includes/header') %>
+  <div class="homepage">
+  <div class="workspaceHeadCover"></div>
+  <img class="homepageBackground" src="/images/workspaceBack.png" alt="">
 
-  <main class="user-workspace-layout">
+  <% if (!workspaces || workspaces.length === 0) { %>
 
-    <!-- LEFT PANEL -->
-    <section class="user-workspace-left">
-      <h2>Your Workspaces</h2>
-
-      <% if (!workspaces || workspaces.length === 0) { %>
-        <p class="no-groups">No workspaces yet. Create one to get started!</p>
-      <% } else { %>
-        <% workspaces.forEach(workspace => { %>
-          <a href="/workspaces/<%= workspace.workspaceID %>" class="workspace-link">
-            <div class="group-card">
-              <div class="group-title"><%= workspace.workspaceName %></div>
-              <div class="group-owner">Code: <%= workspace.joinCode %></div>
-              <div class="group-meta">Owner: <%= workspace.ownerName || 'You' %></div>
-            </div>
-          </a>
-        <% }) %>
-      <% } %>
-    </section>
-
-    <!-- RIGHT PANEL -->
-    <section class="user-workspace-right">
-      <div class="user-workspace-right-inner">
-
-        <h2>Quick Actions</h2>
-
-        <div class="workspace-actions-buttons" style="display: flex; flex-direction: column; gap: 12px;">
-          <a href="/workspaces/create" class="btn-create" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">Create Workspace</a>
-          <a href="/workspaces/join-page" class="btn-secondary">Join Workspace</a>
+    <div class="noworkspace-layout">
+      <div class="noworkspacecontainer">
+        <img class="starsNoWorkspace" src="/images/starsNoWorkspace.webp" alt="">
+        <h2>You Are Currently Not in Any Workspaces</h2>
+        <div class="rightSideButtons">
+          <a href="/workspaces/create" class="createbutton">Create Workspace</a>
+          <span class="orText">Or</span>
+          <a href="/workspaces/join-page" class="joinButton">Join Workspace</a>
         </div>
-
-
-
       </div>
-    </section>
+      <img class="groundNoWorkspace" src="/images/groundNoWorkspace.png" alt="">
+    </div>
 
-  </main>
+  <% } else { %>
 
+
+    <img class="ground" src="/images/ground.png"  alt="">
+
+    <main class="homepage-layout">
+      <section class="homepage-left">
+        <h2>Your Workspaces</h2>
+        <div class="workspace-list">
+          <% workspaces.forEach(workspace => { %>
+            <a href="/workspaces/<%= workspace.workspaceID %>" class="workspace-link">
+              <div class="workspaceCard">
+                <div class="workspacetitle"><%= workspace.workspaceName %></div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </section>
+
+      <section class="homepage-right">
+        <div class="right-content-wrapper">
+          <img class="topStars" src="/images/topStars.webp" alt="">
+          <img class="bottomStars" src="/images/bottomStars.webp" alt="">
+          <h2>Enter a New Workspace</h2>
+          <div class="rightSideButtons">
+            <a href="/workspaces/create" class="createbutton">Create Workspace</a>
+            <span class="orText">Or</span>
+            <a href="/workspaces/join-page" class="joinButton">Join Workspace</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  <% } %>
+  </div>
 </body>
 </html>
