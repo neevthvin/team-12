@@ -1,48 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <%- include('includes/head2') %>
-<%- include('includes/head') %>
+
+<body style="background: linear-gradient(150deg, #ffd1ea, #d6ffef); min-height: 100vh;">
+
 <%- include('includes/header') %>
-<body>
 
 <main class="skills-page">
+
   <% if (errors && errors.length) { %>
     <% errors.forEach(error => { %>
       <p class="notice"><%= error %></p>
     <% }) %>
   <% } %>
 
-  <h1 style="color:black; text-align: center;">Enter Your Skills</h1>
-  <br />
-
-  <div class="enter-skills" style="text-align:center;">
-    <input 
-      style="width:600px; background-color: white; border-radius: 12px; color:black; outline:none; border:none;" 
-      type="text" 
-      id="skillInput" 
-      placeholder="Enter Skills (ex: Creative Direction)" 
-      autocomplete="off" 
-    />
-    <button 
-      style="width:100px; background-color: black; color: white; border-radius: 12px;"
-      type="button" 
-      onclick="addSkill()">
-      ADD
-    </button>
+  <div class="progress-steps">
+    <div class="step done">Create Account</div>
+    <div class="step done">Tell Us About Yourself</div>
+    <div class="step active">Enter Your Skills</div>
+    <div class="step">Set Your Availability</div>
+    <div class="step">Create/Join Workspaces</div>
   </div>
 
-  <br />
+  <br>
 
-  <fieldset style="background-color: white; width:710px; height: 300px; border-radius: 12px; margin:auto; outline: none;">
-    <div class="entered-skills" id="enteredSkills"></div>
-  </fieldset>
+  <h1 style="color:black; text-align:center;">Enter Your Skills</h1>
 
-  <br />
+  <br>
+  <div class="skills-container">
+    <div class="enter-skills">
+      <input
+        type="text"
+        id="skillInput"
+        placeholder="Enter Skills (ex: Creative Direction)"
+        autocomplete="off"
+      />
+      <button
+        class="authButton"
+        type="button"
+        onclick="addSkill()">
+        ADD
+      </button>
+    </div>
+
+    <br>
+    <fieldset>
+      <div class="entered-skills" id="enteredSkills"></div>
+    </fieldset>
+
+  </div>
+
+  <br>
 
   <div class="confirm-container">
-    <button 
-      style="width:200px; background-color: black; color: white; border-radius: 12px;" 
-      type="button" 
+    <button
+      class="authButton"
+      type="button"
       onclick="submitSkills()">
       CONFIRM
     </button>
@@ -52,6 +66,76 @@
 
 </main>
 
-    <script src="/js/skills.js"></script>
-  </body>
+<script>
+  let skills = [];
+
+  function addSkill() {
+      const input = document.getElementById("skillInput");
+      const skill = input.value.trim();
+
+      if (!skill) return;
+
+      if (skills.includes(skill)) {
+          input.value = "";
+          return;
+      }
+
+      skills.push(skill);
+      input.value = "";
+
+      renderSkills();
+  }
+
+  function renderSkills() {
+      const container = document.getElementById("enteredSkills");
+      container.innerHTML = "";
+
+      skills.forEach((skill, index) => {
+          const skillEl = document.createElement("div");
+          skillEl.classList.add("skill-tag");
+
+          const text = document.createElement("span");
+          text.textContent = skill;
+
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "X";
+          removeBtn.classList.add("remove-btn");
+
+          removeBtn.onclick = () => {
+              skills.splice(index, 1);
+              renderSkills();
+          };
+
+          skillEl.appendChild(text);
+          skillEl.appendChild(removeBtn);
+
+          container.appendChild(skillEl);
+      });
+  }
+
+  async function submitSkills() {
+      if (skills.length === 0) {
+          alert("Please add at least one skill");
+          return;
+      }
+
+      const res = await fetch("/skills-selection", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ skills })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+          window.location.href = "/dashboard";
+      } else {
+          alert("Error saving skills");
+      }
+  }  
+</script>
+
+</body>
 </html>
