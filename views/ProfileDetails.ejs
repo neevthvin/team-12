@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/header') %>
+<%- include('includes/head2') %>
+
+<body style="background: linear-gradient(150deg, #ffd1ea, #d6ffef); min-height: 100vh;">
+
+<main class="profile-page">
+  <% if (errors && errors.length) { %>
+    <% errors.forEach(error => { %>
+      <p class="notice"><%= error %></p>
+    <% }) %>
+  <% } %>
+
+  <div class="progress-steps">
+    <div class="step done">Create Account</div>
+    <div class="step active">Tell Us About Yourself</div>
+    <div class="step">Enter Your Skills</div>
+    <div class="step">Set Your Availability</div>
+    <div class="step">Create/Join Workspaces</div>
+  </div>
+
+  <br>
+
+  <h1 style="color:black; text-align: center;">Tell Us About Yourself</h1>
+
+  <br />
+
+  <div class="profile-details">
+    <div class="left-side">
+      <div class="profile-pic">
+        <img id="preview" src="/images/userProf.png" alt="Profile" />
+      </div>
+      <button class="changeButton">Change Photo</button>
+    </div>
+
+    <div class="right-side">
+      <form id="profDetails" action="/profile-details/save-profile" method="POST">
+        
+        <div class="box1">
+          <label for="displayName">Display Name*</label>
+          <input type="text" id="displayName" name="displayName" placeholder="Enter The Name You Want To Go By" required />
+        </div>
+
+        <div class="parent">
+          <div class="box2">       
+            <label for="currentRole">Current Role*</label>
+            <input type="text" id="currentRole" name="currentRole" placeholder="Select your Role" required />
+          </div>
+
+          <div class="box3">  
+            <label for="organization">Organization*</label>
+            <input type="text" id="organization" name="organization" placeholder="Enter School or Company" required />
+          </div>
+        </div>
+
+        <div class="box4"> 
+          <label for="bio">Short Bio</label>
+          <textarea 
+            id="bio" 
+            name="bio" 
+            maxlength="150"
+            placeholder="Tell us a little about yourself"></textarea>
+          <p id="charCount">(0 / 150)</p>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <br />
+
+  <div class="postSubmit">
+    <button class="authButton" type="submit" form="profDetails">
+      CONFIRM
+    </button>
+  </div>
+
+  <a class="skip-link" href="/skills-selection">
+    Skip For Now >
+  </a>
+
+</main>
+
+<script>
+const bio = document.getElementById("bio");
+const counter = document.getElementById("charCount");
+
+bio.addEventListener("input", () => {
+    counter.textContent = bio.value.length + " / 150";
+});
+</script>
+
+</body>
+</html>
