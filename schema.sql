@@ -145,6 +145,7 @@ ALTER TABLE user_profile ADD COLUMN bio VARCHAR(255);
 ALTER TABLE user_profile DROP COLUMN skills;
 ALTER TABLE user_profile DROP COLUMN personalityType;
 ALTER TABLE user_profile ADD COLUMN profilePicture VARCHAR(255);
+ALTER TABLE Workspace ADD COLUMN description VARCHAR(500);
 
 CREATE TABLE IF NOT EXISTS Availability (
     ID        INT AUTO_INCREMENT PRIMARY KEY,

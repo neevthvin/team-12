@@ -60,9 +60,9 @@ router.post("/create", mustBeLoggedIn, async (req, res) => {
         }
 
         const [result] = await pool.query(
-            "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode) VALUES (?, ?, ?, ?)",
-            [workspaceName, req.user.username, req.user.userID, joinCode]
-        );
+    "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode, description) VALUES (?, ?, ?, ?, ?)",
+    [workspaceName, req.user.username, req.user.userID, joinCode, description]
+);
 
         await pool.query(
             "INSERT INTO User_Workspace (userID, workspaceID, isOwner) VALUES (?, ?, ?)",
@@ -104,8 +104,8 @@ router.post("/", mustBeLoggedIn, async (req, res) => {
         }
 
         const [result] = await pool.query(
-            "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode) VALUES (?, ?, ?, ?)",
-            [workspaceName, req.user.username, req.user.userID, joinCode]
+          "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode, description) VALUES (?, ?, ?, ?, ?)",
+          [workspaceName, req.user.username, req.user.userID, joinCode, description]
         );
 
         await pool.query(
