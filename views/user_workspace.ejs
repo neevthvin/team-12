@@ -3,6 +3,19 @@
 <%- include('includes/head2') %>
 
 <body class="user-workspace-page">
+  <svg style="display:none;">
+  <filter id="displacementFilter">
+    <feTurbulence type="turbulence"
+      baseFrequency="0.01"
+      numOctaves="2"
+      result="turbulence" />
+    <feDisplacementMap in="SourceGraphic"
+      in2="turbulence"
+      scale="100"
+      xChannelSelector="R"
+      yChannelSelector="G" />
+  </filter>
+</svg>
   <%- include('includes/header') %>
 
   <div class="userWorkPage">
@@ -103,10 +116,12 @@
           </div> -->
 
           <div class="aibuttonrow">
-            <a href="/workspaces/<%= workspace.workspaceID %>/suggestions" class="userWork-AI">
+            <div class="userWork-AI-wrap">
+              <a href="/workspaces/<%= workspace.workspaceID %>/suggestions" class="userWork-AI">
+                <img src="/images/aibuttonStars.svg" alt="AI Assistant" class="userWork-AI-stars">
+              </a>
               <span class="userWork-AI-optimal">Optimal Group Suggestions</span>
-              <img src="/images/aibuttonStars.svg" alt="AI Assistant" class="userWork-AI-stars">
-            </a>
+            </div>
           </div>
 
           <div class="userWorkJoinCode">
@@ -214,6 +229,8 @@
       setTimeout(() => copyBtn.classList.remove('copied'), 1500);
     });
   }
+
+  
 </script>
 
 </body>

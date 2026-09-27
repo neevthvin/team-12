@@ -519,8 +519,8 @@ nav {
 
 .footer {
     width: 100%;
-    height: 148px;
-    background: #fff;
+    height: 128px;
+    background: #FFFCFB;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -530,13 +530,13 @@ nav {
 }
 
 .footerLogo {
-    width: 131px;
-    height: 42px;
+    width: 120px;
+    height: 34px;
     object-fit: contain;
 }
 
 .copyright {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 200;
     color: #164D47;
 }
@@ -654,6 +654,49 @@ img {
     55%  { transform: translateY(-6px)  rotate(-3deg); }
     80%  { transform: translateY(-11px) rotate(2deg);  }
     100% { transform: translateY(0px)   rotate(-4deg); }
+}
+
+@media (max-width: 480px) {
+    /* headlineTitle, headline-under, and flower-container are already
+       continuous formulas above — nothing to override here, they
+       naturally reach their smaller end of the clamp() on narrow screens */
+
+    .card {
+        padding-left: 17%;
+        padding-right: 18px;
+        min-height: 110px;
+    }
+
+    .card.card2 {
+        padding-left: 18px;
+        padding-right: 17%;
+    }
+
+    .card::before {
+        border-radius: 46px 0 0 46px;
+    }
+
+    .card.card2::before {
+        border-radius: 0 46px 46px 0;
+    }
+
+    .cardInner {
+        gap: 14px;
+    }
+
+    .illustration {
+        width: 68px;
+        height: 68px;
+        flex-shrink: 0;
+    }
+
+    .pinkSectionTitle {
+        font-size: 23px;
+    }
+
+    .textInCard {
+        font-size: 15px;
+    }
 }
 
 /* hidden for users who prefer reduced motion */
@@ -1140,9 +1183,32 @@ body:has(.create-workspace-page) .header {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to bottom, rgba(46, 29, 95, 0.6), rgba(160, 34, 137, 0.6));
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(to bottom, rgba(46, 29, 95, 0.35), rgba(160, 34, 137, 0.35));
   border-radius: 20px;
   padding: 30px;
+  overflow: hidden;
+  box-sizing: border-box;
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+}
+
+.homepage-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  pointer-events: none;
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.38),
+              inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+}
+
+.homepage-left > * {
+  position: relative;
+  z-index: 1;
 }
 
 .homepage-left h2 {
@@ -1179,6 +1245,19 @@ body:has(.create-workspace-page) .header {
   position: relative;
   isolation: isolate;
   transition: none;
+  overflow: hidden;
+}
+
+.workspaceCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 20px;
+  pointer-events: none;
+  box-shadow: inset 2px 2px 3px -2px rgba(255, 255, 255, 0.25),
+              inset 0 0 6px 1px rgba(255, 255, 255, 0.15);
 }
 
 .workspaceCard::after {
@@ -1189,7 +1268,7 @@ body:has(.create-workspace-page) .header {
   border-radius: 20px;
   z-index: 0;
   opacity: 0;
-  transition: opacity 0.1s ease;
+  transition: opacity 0.25s ease;
   pointer-events: none;
 }
 
@@ -1282,37 +1361,43 @@ body:has(.create-workspace-page) .header {
   cursor: pointer;
   white-space: nowrap;
   position: relative;
-  background: transparent;
   isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(to right, rgba(177, 92, 174, 0.75) -33.3%, rgba(218, 29, 126, 0.75) 166.7%);
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
 }
 
 .createbutton::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, #AC66AA -33.3%, #D82783 166.7%);
+  z-index: 2;
   border-radius: 15px;
-  z-index: -1;
-  transition: opacity 0.2s ease;
+  pointer-events: none;
+  box-shadow: inset 2px 2px 3px -2px rgba(255, 255, 255, 0.25),
+              inset 0 0 6px 1px rgba(255, 255, 255, 0.15);
 }
 
 .createbutton::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, #a15f9e -33.3%, #c22475 166.7%);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 15px;
-  z-index: -1;
+  z-index: 0;
   opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.createbutton:hover {
-  color: #dbdbdb;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
 }
 
 .createbutton:hover::after {
   opacity: 1;
+}
+
+.createbutton span {
+  position: relative;
+  z-index: 1;
 }
 
 .joinButton {
@@ -1330,39 +1415,44 @@ body:has(.create-workspace-page) .header {
   cursor: pointer;
   white-space: nowrap;
   position: relative;
-  background: transparent;
   isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(to right, rgba(123, 146, 210, 0.75), rgba(65, 155, 152, 0.75));
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
 }
 
 .joinButton::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, #8096D0, #45908D);
+  z-index: 2;
   border-radius: 15px;
-  z-index: -1;
-  transition: opacity 0.2s ease;
+  pointer-events: none;
+  box-shadow: inset 2px 2px 3px -2px rgba(255, 255, 255, 0.25),
+              inset 0 0 6px 1px rgba(255, 255, 255, 0.15);
 }
 
 .joinButton::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, #7488be, #3f8481);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 15px;
-  z-index: -1;
+  z-index: 0;
   opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.joinButton:hover {
-  color: #dbdbdb;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
 }
 
 .joinButton:hover::after {
   opacity: 1;
 }
 
+.joinButton span {
+  position: relative;
+  z-index: 1;
+}
 /* mobile viewing */
 @media (max-width: 900px) {
   .topStars {
@@ -1392,6 +1482,7 @@ body:has(.create-workspace-page) .header {
   .homepage-left {
     width: 100%;
     max-height: none;
+    z-index: 0;
     height: auto;
     flex-shrink: 1;
   }
@@ -1594,6 +1685,7 @@ body:has(.create-workspace-page) .header {
   right: 0;
   bottom: 0;
   overflow: hidden;
+  filter: saturate(1.1);
   /* color of bubbles */
   --wb-color1: 32, 29, 108;
     --wb-color2: 100, 45, 100;
@@ -1771,7 +1863,7 @@ body:has(.create-workspace-page) .header {
   position: fixed;
   top: 60px;
   left: 0;
-  opacity: .6;
+  opacity: 0;
   width: 100%;
   height: calc(100% - 60px);
   object-fit: cover;
@@ -1791,7 +1883,7 @@ body:has(.create-workspace-page) .header {
     pointer-events: none;
     z-index: 1;
     mix-blend-mode: soft-light;
-    opacity: .9;
+    opacity: 1;
     background:
         radial-gradient(ellipse 45% 30% at 8% 3%,  #642d64 0%, #5d2564 30%, transparent 95%),
         radial-gradient(ellipse 35% 22% at 18% 0%, #652a72 0%, transparent 95%),
@@ -1808,6 +1900,7 @@ body:has(.create-workspace-page) .header {
 }
 
 /* grain overlay on top of user workspace background */
+/*
 .userWorkPage::after {
   content: '';
   position: fixed;
@@ -1820,6 +1913,7 @@ body:has(.create-workspace-page) .header {
   pointer-events: none;
   z-index: 3;
 }
+*/
 
 .userWorkGroupList {
   position: relative;
@@ -1947,7 +2041,7 @@ body:has(.create-workspace-page) .header {
 .workspaceMenu { position: relative; }
 .workspaceMenuOptions {
   position: absolute;
-  top: 32px;
+  top: 38px;
   right: 0;
   z-index: 5;
   display: none;
@@ -2094,15 +2188,29 @@ body:has(.create-workspace-page) .header {
   flex: 1;
   min-width: 0;
   position: relative;
-  background: linear-gradient(to bottom, rgba(117, 89, 165, 0.4), rgba(132, 53, 132, 0.5));
-  border-radius: 20px;
   padding: 32px 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   box-sizing: border-box;
-  box-shadow: 0px 18px 40px 0px rgba(0, 0, 0, 0.30);
+  overflow: hidden;
+  border-radius: 20px;
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
 }
+.userWorkLeft::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  -webkit-box-shadow: inset 2px 2px 0px -2px rgba(255, 255, 255, 0.7),
+                      inset 0 0 3px 1px rgba(255, 255, 255, 0.7);
+box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.5),
+            inset 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+
 
 .userWorkYourGroups {
   font-family: 'Geologica', sans-serif;
@@ -2149,10 +2257,9 @@ body:has(.create-workspace-page) .header {
   gap: 28px;
 }
 
+
 .userWorkRightBox {
   position: relative;
-  background: linear-gradient(to bottom, rgba(118, 91, 166, 0.8), rgba(169, 96, 169, 0.7));
-  border-radius: 18px;
   padding: 20px 12px;
   display: grid;
   grid-template-rows: auto auto;
@@ -2162,13 +2269,44 @@ body:has(.create-workspace-page) .header {
   text-decoration: none;
   width: 100%;
   height: 210px;
-  transition: filter 0.2s ease;
   box-sizing: border-box;
   min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(249, 184, 252, 0.16);
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+  transition: 
+    background 0.25s ease,
+    filter 0.2s ease, background 0.2s ease;
 }
+
+.userWorkRightBox::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  pointer-events: none;
+  -webkit-box-shadow: inset 2px 2px 0px -2px rgba(255, 255, 255, 0.7),
+                      inset 0 0 3px 1px rgba(255, 255, 255, 0.7);
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.25),
+              inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+}
+
 .userWorkRightBox:hover {
-   filter: brightness(.84); 
-  }
+   backdrop-filter: brightness(0.92) blur(2px) url(#displacementFilter);
+   background: rgba(187, 83, 216, 0.2);
+}
+
+.userWorkRightBox img {
+  transition: filter 0.2s ease;
+}
+
+.userWorkRightBox:hover img {
+  filter: brightness(0.80);
+}
 
 .userWorkChatName {
   font-family: 'Geologica', sans-serif;
@@ -2214,48 +2352,81 @@ body:has(.create-workspace-page) .header {
   width: 100%;
   height: 58px;
   box-sizing: border-box;
-  background: linear-gradient(to bottom, rgba(117, 87, 169, 0.8), rgba(196, 112, 172, 0.7));
   border: none;
-  border-radius: 16px;
   font-family: 'Geologica', sans-serif;
   font-size: 26px;
   font-weight: 700;
   color: #FFF5FA;
   cursor: pointer;
   text-decoration: none;
-  transition: filter 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-
+  overflow: hidden;
+  background: rgba(235, 194, 255, 0.16);
+  border-radius: 16px;
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+  transition: 
+    background 0.25s ease,
+    filter 0.2s ease, background 0.2s ease;
 }
-
-.userWorkJoin:hover 
-{
-   filter: brightness(.84);  
+.userWorkJoin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  -webkit-box-shadow: inset 2px 2px 0px -2px rgba(255, 255, 255, 0.7),
+                      inset 0 0 3px 1px rgba(255, 255, 255, 0.7);
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.25),
+            inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+}
+.userWorkJoin:hover {
+   backdrop-filter: brightness(0.92) blur(2px) url(#displacementFilter);
+   background: rgba(187, 83, 216, 0.2);
 }
 
 .aibuttonrow {
   display: flex;
   justify-content: flex-end;
+  position: relative;
 }
 
 .userWork-AI {
   position: relative;
-  background: linear-gradient(to bottom, rgba(117, 87, 169, 0.8), rgba(196, 112, 172, 0.7));
   border: none;
-  border-radius: 10px;
   width: 46px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: filter 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+  background: rgba(235, 194, 255, 0.16);
+  border-radius: 10px;
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+  transition: 
+    background 0.25s ease,
+    filter 0.2s ease, background 0.2s ease;
 }
-
+.userWork-AI::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 2px 2px 0px -2px rgba(255, 255, 255, 0.7),
+                      inset 0 0 3px 1px rgba(255, 255, 255, 0.7);
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.35),
+            inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+}
 .userWork-AI:hover {
-   filter: brightness(.84);
+   backdrop-filter: brightness(0.92) blur(2px) url(#displacementFilter);
+   background: rgba(187, 83, 216, 0.2);
    transform: scale(1.02);
 }
 
@@ -2269,7 +2440,7 @@ body:has(.create-workspace-page) .header {
 
 .userWork-AI-optimal {
     position: absolute;
-    right: calc(100% + 12px);
+    right: calc(100% + 13px);
     top: 50%;
     transform: translate(10px, -50%);
     white-space: nowrap;
@@ -2277,7 +2448,7 @@ body:has(.create-workspace-page) .header {
     font-size: 14px;
     font-weight: 600;
     color: #FFF5FA;
-    background: #6e5295;
+    background: #88579e;
     padding: 8px 16px;
     border-radius: 16px;
     box-shadow: 0px 18px 40px 0px rgba(0, 0, 0, 0.2);
@@ -2286,24 +2457,14 @@ body:has(.create-workspace-page) .header {
     transition: opacity 0.35s ease, transform 0.75s ease;
 }
 
-.userWork-AI:hover .userWork-AI-optimal {
-    opacity: 1;
-    transform: translate(0, -50%);
+.userWork-AI-wrap {
+  position: relative;
+  display: inline-flex;
 }
 
-.userWorkJoinCode {
-  position: relative;
-  width: 100%;
-  height: 58px;
-  box-sizing: border-box;
-  background: linear-gradient(to bottom, rgba(117, 89, 165, 0.4), rgba(132, 53, 132, 0.5));
-  border-radius: 16px;
-  padding: 0 27px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  box-shadow: 0px 18px 40px 0px rgba(0, 0, 0, 0.3);
+.userWork-AI-wrap:hover .userWork-AI-optimal {
+  opacity: 1;
+  transform: translate(0, -50%);
 }
 
 .userWorkJoinCodetitle {
@@ -2318,19 +2479,37 @@ body:has(.create-workspace-page) .header {
   width: 100%;
   height: 58px;
   box-sizing: border-box;
-  background: linear-gradient(to bottom, rgba(134, 102, 188, 0.40), rgba(150, 60, 150, 0.40));
-  border-radius: 16px;
   padding: 0 27px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 18px 40px 0px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  border-radius: 16px;
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+}
+.userWorkJoinCode::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  -webkit-box-shadow: inset 2px 2px 0px -2px rgba(255, 255, 255, 0.7),
+                      inset 0 0 3px 1px rgba(255, 255, 255, 0.7);
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.3),
+            inset 0 0 8px 1px rgba(255, 255, 255, 0.3);
 }
 
 .userWorkJoinCodeText {
     display: flex;
     align-items: center;
     gap: 15px;
+    position: relative;
+    z-index: 1;
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 .userWorkJoinCodetitle {
@@ -2347,6 +2526,8 @@ body:has(.create-workspace-page) .header {
   font-weight: 50;
   color: rgba(255, 245, 250, 0.88);
   letter-spacing: 0.8px;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .userWorkCopyCode {
@@ -2398,7 +2579,9 @@ body:has(.create-workspace-page) .header {
     transform: scale(1);
 }
 
+
 /* stroke for join code and your group box */
+/*
 .userWorkLeft::before,
 .userWorkJoinCode::before {
   content: '';
@@ -2416,8 +2599,10 @@ body:has(.create-workspace-page) .header {
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
 }
+*/
 
 /* stroke for right boxes */
+/*
 .userWorkRightBox::before,
 .userWorkJoin::before,
 .userWork-AI::before 
@@ -2431,8 +2616,10 @@ body:has(.create-workspace-page) .header {
   mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
   mask-composite: exclude;
 }
+*/
 
 /* stroke has same border-radius as box */
+/*
 .userWorkLeft::before { 
   border-radius: 20px; 
 }
@@ -2445,6 +2632,7 @@ body:has(.create-workspace-page) .header {
 .userWork-AI::before {
    border-radius: 10px; 
 }
+*/
 
 .userWorkViewMembersImg {
   width: 110px;
@@ -3552,10 +3740,7 @@ body:has(.profile-page) {
 
 body:has(.skills-page) .header,
 body:has(.skills-page) .header.hidden,
-body:has(.skills-page) .header.scrolled,
-body:has(.profile-page) .header,
-body:has(.profile-page) .header.hidden,
-body:has(.profile-page) .header.scrolled {
+body:has(.skills-page) .header.scrolled {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -3565,14 +3750,13 @@ body:has(.profile-page) .header.scrolled {
     border-radius: 0 !important;
     z-index: 100;
 }
-body:has(.skills-page) .skills-page,
-body:has(.profile-page) .profile-page {
+body:has(.skills-page) .skills-page {
     margin-top: 60px;
 }
 
 .profile-page .display-name,
 .profile-page .edit-profile-header h1 {
-    color: #180D2A;
+    color: #1F4436;
     text-shadow: none;
     text-align: left;
 }
@@ -3642,3 +3826,4 @@ body:has(.profile-page) .profile-page {
   .joinGroupPanels { grid-template-columns: 1fr; }
   .publicGroupsGrid { grid-template-columns: 1fr; }
 }
+

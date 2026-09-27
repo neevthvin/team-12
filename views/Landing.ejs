@@ -2,6 +2,12 @@
 <html lang="en">
 <%- include('includes/head2') %>
 <body>
+  <svg style="display:none;">
+    <filter id="displacementFilter">
+      <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="3" result="turbulence" />
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="13" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
 
 <%- include('includes/header') %>
 

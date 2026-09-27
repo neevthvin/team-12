@@ -3,6 +3,19 @@
 <%- include('includes/head2') %>
 
 <body class="homepagebody">
+  <svg style="display:none;">
+    <filter id="displacementFilter">
+      <feTurbulence type="turbulence"
+        baseFrequency="0.01"
+        numOctaves="3"
+        result="turbulence" />
+      <feDisplacementMap in="SourceGraphic"
+        in2="turbulence"
+        scale="13"
+        xChannelSelector="R"
+        yChannelSelector="G" />
+    </filter>
+  </svg>
   <%- include('includes/header') %>
   <div class="homepage">
   <div class="workspaceHeadCover"></div>
@@ -24,9 +37,9 @@
         <img class="starsNoWorkspace" src="/images/starsNoWorkspace.webp" alt="">
         <h2>You Are Currently Not in Any Workspaces</h2>
         <div class="rightSideButtons">
-          <a href="/workspaces/create" class="createbutton">Create Workspace</a>
+          <a href="/workspaces/create" class="createbutton"><span>Create Workspace</span></a>
           <span class="orText">Or</span>
-          <a href="/workspaces/join-page" class="joinButton">Join Workspace</a>
+          <a href="/workspaces/join-page" class="joinButton"><span>Join Workspace</span></a>
         </div>
       </div>
       <img class="groundNoWorkspace" src="/images/groundNoWorkspace.png" alt="">
@@ -57,9 +70,9 @@
           <img class="bottomStars" src="/images/bottomStars.webp" alt="">
           <h2>Enter a New Workspace</h2>
           <div class="rightSideButtons">
-            <a href="/workspaces/create" class="createbutton">Create Workspace</a>
+            <a href="/workspaces/create" class="createbutton"><span>Create Workspace</span></a>
             <span class="orText">Or</span>
-            <a href="/workspaces/join-page" class="joinButton">Join Workspace</a>
+            <a href="/workspaces/join-page" class="joinButton"><span>Join Workspace</span></a>
           </div>
         </div>
       </section>

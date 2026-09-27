@@ -2,13 +2,32 @@
 <html lang="en">
   <%- include('includes/head2') %>
   <link rel="stylesheet" href="/profile.css" />
-  <body>
+  <body class="profile-body">
+    <div class="blob-container">
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+          </filter>
+        </defs>
+      </svg>
+      <div class="blob-goo">
+        <div class="interactive"></div>
+      </div>
+    </div>
+    <svg style="display:none;">
+      <filter id="displacementFilter">
+        <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2" result="turbulence" />
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="170" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
     <%- include('includes/header') %>
 
     <main class="profile-page">
       <section class="profile-card">
 
-        <div class="profile-content">
+        <div class="profile-content" data-username="<%= user.username %>">
           <div class="profile-header-section">
             <div class="profile-image-block">
               <img
@@ -34,7 +53,6 @@
 
           <div class="bio-section">
             <div id="bioView" class="bio-box">
-              <h3>Short Bio</h3>
               <p id="bioViewText" class="bio-text"></p>
             </div>
           </div>
@@ -58,8 +76,12 @@
           <p id="profileStatus" class="status-text"></p>
         </div>
       </section>
+      
     </main>
-
+    <footer class="footer">
+      <img src="/images/logo.webp" alt="Groupify" class="footerLogo">
+      <p class="copyright">© 2026 Groupify. All rights reserved.</p>
+    </footer>
     <script src="/js/profile-page.js"></script>
   </body>
 </html>

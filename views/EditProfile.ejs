@@ -2,11 +2,31 @@
 <html lang="en">
   <%- include('includes/head2') %>
   <link rel="stylesheet" href="/profile.css" />
-  <body>
+  <body class="editprofile-body">
+    <div class="blob-container">
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+          </filter>
+        </defs>
+      </svg>
+      <div class="blob-goo">
+        <div class="interactive"></div>
+      </div>
+    </div>
+    <svg style="display:none;">
+      <filter id="displacementFilter">
+        <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2" result="turbulence" />
+        <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="170" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
     <%- include('includes/header') %>
 
     <main class="profile-page">
-      <section class="profile-card">
+      <section class="profile-cardEdit">
         <div class="profile-content">
           <div class="edit-profile-header">
             <div class="edit-profile-image-block">
@@ -22,7 +42,7 @@
               <p id="editPictureStatus" class="status-text"></p>
             </div>
 
-            <button type="button" id="editCancelBtn" class="cancel-btn-top">CANCEL</button>
+            <button type="button" id="editCancelBtn" class="cancel-btn-top">EXIT</button>
           </div>
 
           <form id="editProfileForm" class="edit-profile-form">
@@ -88,6 +108,10 @@
         </div>
       </section>
     </main>
+    <footer class="footer">
+      <img src="/images/logo.webp" alt="Groupify" class="footerLogo">
+      <p class="copyright">© 2026 Groupify. All rights reserved.</p>
+    </footer>
 
     <script src="/js/edit-profile-page.js"></script>
   </body>

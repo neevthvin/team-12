@@ -55,7 +55,7 @@ function renderSkills() {
   if (currentSkills.length === 0) {
     const empty = document.createElement("p");
     empty.textContent = "No skills added yet.";
-    empty.style.color = "#999";
+    empty.className = "empty-state";
     skillsList.appendChild(empty);
     return;
   }
@@ -79,7 +79,7 @@ function renderAvailability(availability) {
   if (days.length === 0) {
     const empty = document.createElement("p");
     empty.textContent = "No availability saved yet.";
-    empty.style.color = "#999";
+    empty.className = "empty-state";
     availabilityList.appendChild(empty);
     return;
   }
@@ -104,10 +104,16 @@ function renderAvailability(availability) {
 }
 
 function setProfileFields(data) {
-  displayNameText.textContent = data.displayName || "No display name";
+  const fallbackUsername = document.querySelector(".profile-content").dataset.username;
+
+  displayNameText.textContent = data.displayName || fallbackUsername;
+  displayNameText.classList.remove("empty-state");
+
   document.getElementById("currentRoleValue").textContent = data.currentRole || "No current role";
   document.getElementById("organizationValue").textContent = data.organization || "No organization";
+
   bioViewText.textContent = data.bio || "No bio added yet.";
+  bioViewText.classList.toggle("empty-state", !data.bio);
 
   profilePicturePreview.src = data.profilePicture || "";
 
@@ -135,6 +141,28 @@ async function loadProfile() {
 
 editProfileBtn.addEventListener("click", () => {
   window.location.href = "/profile/edit";
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const interBubble = document.querySelector('.interactive');
+    let curX = 0;
+    let curY = 0;
+    let tgX = 0;
+    let tgY = 0;
+
+    function move() {
+        curX += (tgX - curX) / 20;
+        curY += (tgY - curY) / 20;
+        interBubble.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+        requestAnimationFrame(move);
+    }
+
+    window.addEventListener('mousemove', (event) => {
+        tgX = event.clientX;
+        tgY = event.clientY;
+    });
+
+    move();
 });
 
 loadProfile();
