@@ -91,7 +91,13 @@ function renderEditSkills() {
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
     removeBtn.className = "skill-remove-btn";
-    removeBtn.textContent = "x";
+
+    const removeIcon = document.createElement("img");
+    removeIcon.src = "/images/cross.svg";
+    removeIcon.alt = "Remove";
+    removeIcon.className = "remove-icon";
+    removeBtn.appendChild(removeIcon);
+
     removeBtn.addEventListener("click", () => {
       editCurrentSkills.splice(index, 1);
       renderEditSkills();
@@ -259,5 +265,29 @@ editEditAvailabilityBtn.addEventListener("click", () => {
 });
 
 editBioInput.addEventListener("input", updateEditBioCount);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const interBubble = document.querySelector('.interactive');
+    if (!interBubble) return;
+
+    let curX = 0;
+    let curY = 0;
+    let tgX = 0;
+    let tgY = 0;
+
+    function move() {
+        curX += (tgX - curX) / 20;
+        curY += (tgY - curY) / 20;
+        interBubble.style.transform = `translate(${Math.round(curX)}px, ${Math.round(curY)}px)`;
+        requestAnimationFrame(move);
+    }
+
+    window.addEventListener('mousemove', (event) => {
+        tgX = event.clientX;
+        tgY = event.clientY;
+    });
+
+    move();
+});
 
 loadEditProfile();

@@ -3,10 +3,47 @@
 <%- include('includes/head2') %>
 
 <body class="user-workspace-page">
+  <svg style="display:none;">
+  <filter id="displacementFilter">
+    <feTurbulence type="turbulence"
+      baseFrequency="0.01"
+      numOctaves="2"
+      result="turbulence" />
+    <feDisplacementMap in="SourceGraphic"
+      in2="turbulence"
+      scale="100"
+      xChannelSelector="R"
+      yChannelSelector="G" />
+  </filter>
+</svg>
   <%- include('includes/header') %>
 
   <div class="userWorkPage">
     <img src="/images/UserWorkspaceBack.webp" alt="" class="userWorkBackground">
+
+    <svg class="wb-svg" aria-hidden="true">
+      <defs>
+        <filter id="workspace-bubb">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+          <feColorMatrix in="blur" mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+          <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="wb-gradients-container">
+      <div class="wb-g1"></div>
+      <div class="wb-g2"></div>
+      <div class="wb-g3"></div>
+      <div class="wb-g4"></div>
+      <div class="wb-g5"></div>
+      <div class="wb-g6"></div>
+      <div class="wb-g7"></div>
+      <div class="wb-g8"></div>
+      <div class="wb-g9"></div>
+    </div>
+
     <main class="userWorkGroupList">
 
       <div class="workspacetitleTop">
@@ -15,11 +52,21 @@
           <img src="/images/workspacebackHOVER.svg" alt="Back" class="userWorkbackBut userWorkbackButHOVER">
         </a>
         <h1 class="workspaceNameTitle"><%= workspace.workspaceName %></h1>
-        <button class="userWorkDropDownDim" onclick="this.classList.toggle('open')">
-          <img src="/images/workspacedropdown.svg" alt="Dropdown" class="userWorkDropDown userWorkDropDownNORMAL">
-          <img src="/images/workspacedropdownHOVER.svg" alt="Dropdown" class="userWorkDropDown userWorkDropDownHOVER">
-          <img src="/images/workspacedropdownCLICKED.svg" alt="Dropdown" class="userWorkDropDown userWorkDropDownCLICKED">
-        </button>
+        <div class="workspaceMenu">
+          <button class="userWorkDropDownDim" type="button" aria-label="Workspace options" onclick="this.closest('.workspaceMenu').classList.toggle('open'); this.classList.toggle('open')">
+            <img src="/images/workspacedropdown.svg" alt="" class="userWorkDropDown userWorkDropDownNORMAL">
+            <img src="/images/workspacedropdownHOVER.svg" alt="" class="userWorkDropDown userWorkDropDownHOVER">
+            <img src="/images/workspacedropdownCLICKED.svg" alt="" class="userWorkDropDown userWorkDropDownCLICKED">
+          </button>
+          <div class="workspaceMenuOptions">
+            <% if (isWorkspaceOwner) { %>
+              <button type="button" data-workspace-name="<%= workspace.workspaceName %>" onclick="workspaceModal.openRename(this.dataset.workspaceName)">Rename</button>
+              <button type="button" class="workspaceDeleteOption" onclick="workspaceModal.openDelete()">Delete</button>
+            <% } else { %>
+              <button type="button" onclick="workspaceModal.openInfo()">Info</button>
+            <% } %>
+          </div>
+        </div>
       </div>
 
       <div class="userWorkContainer">
@@ -29,7 +76,7 @@
           <h2 class="userWorkYourGroups">Your Groups</h2>
           <div class="userWorkGroupsList">
             <% if (!groups || groups.length === 0) { %>
-              <p class="userWorkLeftempty">No groups yet. Create one to get started!</p>
+              <p class="userWorkLeftempty">No groups yet. Create or join to get started!</p>
             <% } else { %>
               <% groups.forEach(group => { %>
                 <a href="/groups/<%= group.groupID %>" class="userWorkGroups">
@@ -58,20 +105,42 @@
             </a>
           </div>
 
-          <button class="userWorkJoin" onclick="document.getElementById('join-group-modal').style.display='flex'">
+          <a href="/workspaces/<%= workspace.workspaceID %>/join-groups" class="userWorkJoin">
             Join a Group
-          </button>
+          </a>
 
-          <div class="aibuttonrow">
+          <!-- <div class="aibuttonrow">
             <button class="userWork-AI">
               <img src="/images/aibuttonStars.svg" alt="AI Assistant" class="userWork-AI-stars">
             </button>
+          </div> -->
+
+          <div class="aibuttonrow">
+            <div class="userWork-AI-wrap">
+              <a href="/workspaces/<%= workspace.workspaceID %>/suggestions" class="userWork-AI">
+                <img src="/images/aibuttonStars.svg" alt="AI Assistant" class="userWork-AI-stars">
+              </a>
+              <span class="userWork-AI-optimal">Optimal Group Suggestions</span>
+            </div>
           </div>
 
           <div class="userWorkJoinCode">
-            <span class="userWorkJoinCodetitle">Join Code:</span>
-            <span class="userWorkJoinCodeCode"><%= workspace.joinCode || 'No code set' %></span>
-          </div>
+            <div class="userWorkJoinCodeText">
+                <span class="userWorkJoinCodetitle">Join Code:</span>
+                <span class="userWorkJoinCodeCode" id="joinCodeText"><%= workspace.joinCode || 'No code set' %></span>
+            </div>
+            <% if (workspace.joinCode) { %>
+              <button type="button" class="userWorkCopyCode" id="copyJoinCodeBtn" aria-label="Copy join code" data-code="<%= workspace.joinCode %>">
+                <svg class="userWorkCopyIcon userWorkCopyIconChain" width="26" height="26" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="12.7835" y="2.38351" width="6" height="10" rx="3" transform="rotate(33.0385 12.7835 2.38351)" stroke="#fff5fa" stroke-width="2" stroke-linecap="round"></rect>
+                  <rect x="7.83558" y="6.32284" width="6" height="10" rx="3" transform="rotate(33.0385 7.83558 6.32284)" stroke="#fff5fa" stroke-width="2" stroke-linecap="round"></rect>
+                </svg>
+                <svg class="userWorkCopyIcon userWorkCopyIconCheck" width="26" height="26" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 10.5L8 14.5L16 5.5" stroke="#fff5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            <% } %>
+        </div>
 
         </section>
       </div>
@@ -79,14 +148,90 @@
     </main>
   </div>
 
-  <!-- Simple Modal for Join Group -->
-  <div id="join-group-modal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <span class="close" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
-      <h3>Join Group</h3>
-      <p>Placeholder: Select or enter group join code.</p>
+  <div id="workspace-modal" class="workspaceModal" aria-hidden="true">
+  <section class="workspaceModalDialog" role="dialog" aria-modal="true" aria-labelledby="workspace-modal-title">
+    <button class="workspaceModalClose" type="button" aria-label="Close" onclick="workspaceModal.close()">&times;</button>
+
+    <% if (isWorkspaceOwner) { %>
+      <form id="rename-modal-form" method="post" action="/workspaces/<%= workspace.workspaceID %>/rename">
+        <h2 id="workspace-modal-title">Rename Workspace</h2>
+        <label for="rename-workspace-input">Workspace Name</label>
+        <input id="rename-workspace-input" name="workspaceName" type="text" maxlength="100" required>
+        <div class="workspaceModalActions">
+          <button type="button" class="workspaceModalCancel" onclick="workspaceModal.close()">Cancel</button>
+          <button type="submit" class="workspaceModalPrimary">Save Name</button>
+        </div>
+      </form>
+
+      <form id="delete-modal-form" method="post" action="/workspaces/<%= workspace.workspaceID %>/delete" hidden>
+        <h2>Delete Workspace?</h2>
+        <p>This will permanently delete the workspace and all of its groups.</p>
+        <div class="workspaceModalActions">
+          <button type="button" class="workspaceModalCancel" onclick="workspaceModal.close()">Cancel</button>
+          <button type="submit" class="workspaceModalDelete">Delete workspace</button>
+        </div>
+      </form>
+    <% } %>
+
+    <div id="info-modal-content" hidden>
+      <h2>About This Workspace</h2>
+      <p><%= workspace.description || 'No Description Provided.' %></p>
     </div>
-  </div>
+  </section>
+</div>
+<script>
+  window.workspaceModal = {
+    modal: document.getElementById('workspace-modal'),
+    renameForm: document.getElementById('rename-modal-form'),
+    deleteForm: document.getElementById('delete-modal-form'),
+    infoContent: document.getElementById('info-modal-content'),
+    hideAll() {
+      if (this.renameForm) this.renameForm.hidden = true;
+      if (this.deleteForm) this.deleteForm.hidden = true;
+      if (this.infoContent) this.infoContent.hidden = true;
+    },
+    openRename(currentName) {
+      this.hideAll();
+      this.renameForm.hidden = false;
+      this.modal.classList.add('is-open');
+      this.modal.setAttribute('aria-hidden', 'false');
+      const input = document.getElementById('rename-workspace-input');
+      input.value = currentName;
+      input.focus();
+      input.select();
+    },
+    openDelete() {
+      this.hideAll();
+      this.deleteForm.hidden = false;
+      this.modal.classList.add('is-open');
+      this.modal.setAttribute('aria-hidden', 'false');
+    },
+    openInfo() {
+      this.hideAll();
+      this.infoContent.hidden = false;
+      this.modal.classList.add('is-open');
+      this.modal.setAttribute('aria-hidden', 'false');
+    },
+    close() {
+      this.modal.classList.remove('is-open');
+      this.modal.setAttribute('aria-hidden', 'true');
+    }
+  };
+  workspaceModal.modal.addEventListener('click', (event) => {
+    if (event.target === workspaceModal.modal) workspaceModal.close();
+  });
+
+  const copyBtn = document.getElementById('copyJoinCodeBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(copyBtn.dataset.code);
+      copyBtn.classList.add('copied');
+      setTimeout(() => copyBtn.classList.remove('copied'), 1500);
+    });
+  }
+
+  
+</script>
 
 </body>
 </html>

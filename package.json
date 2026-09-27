@@ -26,6 +26,7 @@
     "streamifier": "^0.1.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "patch-package": "^8.0.1"
   }
 }

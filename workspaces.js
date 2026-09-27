@@ -43,9 +43,9 @@ router.post("/create", mustBeLoggedIn, async (req, res) => {
     if (!workspaceName) errors.push("Workspace name is required!");
     if (workspaceName.length < 3) errors.push("Workspace name must be at least 3 characters");
     if (workspaceName.length > 100) errors.push("Workspace name cannot exceed 100 characters");
-    if (!startDate) errors.push("Start date is required!");
-    if (!endDate) errors.push("End date is required!");
-    if (startDate && endDate && startDate > endDate) errors.push("End date must be after start date");
+    // if (!startDate) errors.push("Start date is required!");
+    // if (!endDate) errors.push("End date is required!");
+    // if (startDate && endDate && startDate > endDate) errors.push("End date must be after start date");
 
     if (errors.length) {
         return res.render("CreateWorkspace", { errors });
@@ -60,9 +60,9 @@ router.post("/create", mustBeLoggedIn, async (req, res) => {
         }
 
         const [result] = await pool.query(
-            "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode) VALUES (?, ?, ?, ?)",
-            [workspaceName, req.user.username, req.user.userID, joinCode]
-        );
+    "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode, description) VALUES (?, ?, ?, ?, ?)",
+    [workspaceName, req.user.username, req.user.userID, joinCode, description]
+);
 
         await pool.query(
             "INSERT INTO User_Workspace (userID, workspaceID, isOwner) VALUES (?, ?, ?)",
@@ -104,8 +104,8 @@ router.post("/", mustBeLoggedIn, async (req, res) => {
         }
 
         const [result] = await pool.query(
-            "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode) VALUES (?, ?, ?, ?)",
-            [workspaceName, req.user.username, req.user.userID, joinCode]
+          "INSERT INTO Workspace (workspaceName, ownerName, userID, joinCode, description) VALUES (?, ?, ?, ?, ?)",
+          [workspaceName, req.user.username, req.user.userID, joinCode, description]
         );
 
         await pool.query(
@@ -163,6 +163,89 @@ router.post("/join", mustBeLoggedIn, async (req, res) => {
     }
 });
 
+router.post("/:workspaceID/rename", mustBeLoggedIn, async (req, res) => {
+  const workspaceName = typeof req.body.workspaceName === "string" ? req.body.workspaceName.trim() : "";
+  if (workspaceName.length < 3 || workspaceName.length > 100) {
+    return res.redirect(`/workspaces/${req.params.workspaceID}`);
+  }
+  try {
+    const [result] = await pool.query(
+      "UPDATE Workspace SET workspaceName = ? WHERE workspaceID = ? AND userID = ?",
+      [workspaceName, req.params.workspaceID, req.user.userID]
+    );
+    if (!result.affectedRows) return res.status(403).redirect("/workspaces");
+    res.redirect(`/workspaces/${req.params.workspaceID}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+router.post("/:workspaceID/delete", mustBeLoggedIn, async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      "DELETE FROM Workspace WHERE workspaceID = ? AND userID = ?",
+      [req.params.workspaceID, req.user.userID]
+    );
+    if (!result.affectedRows) return res.status(403).redirect("/workspaces");
+    res.redirect("/workspaces");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+// Join group page.
+router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
+  try {
+    const workspaceID = req.params.workspaceID;
+    const [workspaceRows] = await pool.query("SELECT * FROM Workspace WHERE workspaceID = ?", [workspaceID]);
+    const [accessRows] = await pool.query(
+      "SELECT 1 FROM User_Workspace WHERE workspaceID = ? AND userID = ?",
+      [workspaceID, req.user.userID]
+    );
+    if (!workspaceRows.length || !accessRows.length) return res.redirect("/workspaces");
+
+    const [groups] = await pool.query(`
+      SELECT g.groupID, g.groupName, g.ownerName
+      FROM \`Group\` g
+      WHERE g.workspaceID = ?
+        AND NOT EXISTS (
+          SELECT 1 FROM User_Group ug WHERE ug.groupID = g.groupID AND ug.userID = ?
+        )
+      ORDER BY g.createdAt DESC
+    `, [workspaceID, req.user.userID]);
+
+    const publicGroups = groups.map(group => ({
+      id: group.groupID,
+      name: group.groupName,
+      owner: group.ownerName
+    }));
+    const invites = [];
+
+    res.render("JoinGroup", { workspace: workspaceRows[0], publicGroups, invites, message: req.query.message || "" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+router.post("/:workspaceID/join-groups/:groupID", mustBeLoggedIn, async (req, res) => {
+  try {
+    const { workspaceID, groupID } = req.params;
+    const [groups] = await pool.query("SELECT groupID FROM `Group` WHERE groupID = ? AND workspaceID = ?", [groupID, workspaceID]);
+    if (!groups.length) return res.redirect(`/workspaces/${workspaceID}/join-groups?message=That+group+is+no+longer+available.`);
+    await pool.query(
+      "INSERT IGNORE INTO User_Group (userID, workspaceID, groupID, isOwner) VALUES (?, ?, ?, 'false')",
+      [req.user.userID, workspaceID, groupID]
+    );
+    res.redirect(`/workspaces/${workspaceID}/join-groups?message=Request+sent!+You+have+been+added+to+the+group.`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
 // GET specific user workspace with groups
 router.get("/:workspaceID", mustBeLoggedIn, async (req, res) => {
   try {
@@ -190,7 +273,37 @@ router.get("/:workspaceID", mustBeLoggedIn, async (req, res) => {
       ORDER BY g.createdAt DESC
     `, [workspaceID, req.user.userID]);
 
-    res.render("user_workspace", { workspace, groups });
+    res.render("user_workspace", {
+      workspace,
+      groups,
+      isWorkspaceOwner: Number(workspace.userID) === Number(req.user.userID)
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+// GET AI group suggestions page (placeholder for now)
+router.get("/:workspaceID/suggestions", mustBeLoggedIn, async (req, res) => {
+  try {
+    const workspaceID = req.params.workspaceID;
+    const [workspaceRows] = await pool.query("SELECT * FROM Workspace WHERE workspaceID = ?", [workspaceID]);
+    if (workspaceRows.length === 0) {
+      return res.status(404).redirect("/workspaces");
+    }
+    const workspace = workspaceRows[0];
+
+    // Check user access
+    const [accessRows] = await pool.query(
+      "SELECT * FROM User_Workspace WHERE workspaceID = ? AND userID = ?",
+      [workspaceID, req.user.userID]
+    );
+    if (accessRows.length === 0) {
+      return res.status(403).redirect("/workspaces");
+    }
+
+    res.render("GroupSuggestions", { workspace, user: req.user });
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
