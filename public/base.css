@@ -906,6 +906,49 @@ img {
     resize: vertical;
 }
 
+.form-group textarea.group-description {
+    height: 72px;
+}
+
+.group-choice-group {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.group-choice-group legend {
+    font-family: 'Geologica', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #aaaaaa;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.group-choice-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.group-choice-option {
+    align-items: center;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'Geologica', sans-serif;
+    font-size: 14px;
+    gap: 8px;
+}
+
+.group-choice-option input {
+    accent-color: #E2308D;
+    height: 16px;
+    margin: 0;
+    width: 16px;
+}
+
 .form-group input::placeholder,
 .form-group textarea::placeholder {
     color: #666666;
@@ -946,6 +989,10 @@ img {
     transition: opacity 0.2s ease;
     margin: 0;
 }
+
+  .group-create-submit {
+    margin-top: 12px;
+  }
 
 .btn-create:hover { opacity: 0.88; }
 
