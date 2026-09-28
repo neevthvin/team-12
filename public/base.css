@@ -959,6 +959,10 @@ body:has(.create-workspace-page) .header {
     isolation: isolate;
 }
 
+  .create-workspace-page > .create-workspace-card {
+    flex-shrink: 0;
+  }
+
 .create-workspace-card h1 {
     font-family: 'Geologica', sans-serif;
     font-size: 32px;
@@ -1032,6 +1036,106 @@ body:has(.create-workspace-page) .header {
 .form-group textarea {
     height: 130px;
 }
+
+.form-group textarea.group-description {
+    height: 72px;
+}
+
+.group-choice-group {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.create-workspace-page > .create-workspace-card .group-choice-group {
+    align-self: stretch;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.group-choice-group legend {
+    font-family: 'Geologica', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+  color: #FFFCFB;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.group-choice-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.create-workspace-page > .create-workspace-card .group-choice-options {
+    justify-content: flex-start;
+}
+
+.group-choice-option {
+    align-items: center;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'Geologica', sans-serif;
+    font-size: 14px;
+    gap: 8px;
+}
+
+.group-choice-option input {
+    accent-color: #E2308D;
+    height: 16px;
+    margin: 0;
+    width: 16px;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #666666;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    box-shadow: 0 0 0 2px #E2308D;
+}
+
+.form-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-group input[type="date"] {
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.btn-create {
+    font-family: 'Geologica', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(to right, #E2308D, #5C4185);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    width: 100%;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    margin: 0;
+}
+
+  .group-create-submit {
+    margin-top: 12px;
+  }
+
+.btn-create:hover { opacity: 0.88; }
 
 .error-list {
     list-style: none;

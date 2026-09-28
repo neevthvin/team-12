@@ -267,8 +267,8 @@ router.get("/:workspaceID", mustBeLoggedIn, async (req, res) => {
 
     // Fetch user's groups in this workspace
     const [groups] = await pool.query(`
-      SELECT g.* FROM \`Group\` g
-      JOIN User_Group ug ON g.groupID = ug.groupID
+      SELECT g.* FROM \`Team\` g
+      JOIN User_Team ug ON g.groupID = ug.groupID
       WHERE g.workspaceID = ? AND ug.userID = ?
       ORDER BY g.createdAt DESC
     `, [workspaceID, req.user.userID]);

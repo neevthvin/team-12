@@ -51,23 +51,26 @@ CREATE TABLE IF NOT EXISTS User_Workspace (
 );
  
 /*
-Group table stores groups created within a workspace.
+Team table stores groups created within a workspace.
 */
-CREATE TABLE IF NOT EXISTS `Group` (
+CREATE TABLE IF NOT EXISTS `Team` (
     groupID     INT AUTO_INCREMENT PRIMARY KEY,
     groupName   VARCHAR(100) NOT NULL,
+    description TEXT,
     ownerName   VARCHAR(100) NOT NULL,
     userID      INT NOT NULL,
     workspaceID INT NOT NULL,
+    visibility  VARCHAR(100) NOT NULL,
+    joinType    VARCHAR(100) NOT NULL,
     createdAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (userID)      REFERENCES User(userID)          ON DELETE CASCADE,
     FOREIGN KEY (workspaceID) REFERENCES Workspace(workspaceID) ON DELETE CASCADE
 );
  
 /*
-User_Group junction table for the many to many relationship between user and group.
+User_Team junction table for the many to many relationship between user and team.
 */
-CREATE TABLE IF NOT EXISTS User_Group (
+CREATE TABLE IF NOT EXISTS User_Team (
     userID      INT NOT NULL,
     workspaceID INT NOT NULL,
     groupID     INT NOT NULL,
@@ -75,7 +78,7 @@ CREATE TABLE IF NOT EXISTS User_Group (
     PRIMARY KEY (userID, workspaceID, groupID),
     FOREIGN KEY (userID)      REFERENCES User(userID)          ON DELETE CASCADE,
     FOREIGN KEY (workspaceID) REFERENCES Workspace(workspaceID) ON DELETE CASCADE,
-    FOREIGN KEY (groupID)     REFERENCES `Group`(groupID)      ON DELETE CASCADE
+    FOREIGN KEY (groupID)     REFERENCES `Team`(groupID)      ON DELETE CASCADE
 );
  
 /*
@@ -115,7 +118,7 @@ CREATE TABLE IF NOT EXISTS Groupchat (
     groupID     INT,
     workspaceID INT,
     FOREIGN KEY (userID)      REFERENCES User(userID)          ON DELETE CASCADE,
-    FOREIGN KEY (groupID)     REFERENCES `Group`(groupID)      ON DELETE CASCADE,
+    FOREIGN KEY (groupID)     REFERENCES `Team`(groupID)      ON DELETE CASCADE,
     FOREIGN KEY (workspaceID) REFERENCES Workspace(workspaceID) ON DELETE CASCADE
 );
  
@@ -133,7 +136,7 @@ CREATE TABLE IF NOT EXISTS Tasks (
     createdAt   DATETIME DEFAULT CURRENT_TIMESTAMP,
     dueDate     DATETIME,
     FOREIGN KEY (assignedTo) REFERENCES User(userID)     ON DELETE SET NULL,
-    FOREIGN KEY (groupID)    REFERENCES `Group`(groupID) ON DELETE CASCADE,
+    FOREIGN KEY (groupID)    REFERENCES `Team`(groupID) ON DELETE CASCADE,
     FOREIGN KEY (createdBy)  REFERENCES User(userID)     ON DELETE CASCADE
 );
 
