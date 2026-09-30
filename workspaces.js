@@ -208,10 +208,10 @@ router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
 
     const [groups] = await pool.query(`
       SELECT g.groupID, g.groupName, g.ownerName
-      FROM \`Group\` g
+      FROM \`Team\` g
       WHERE g.workspaceID = ?
         AND NOT EXISTS (
-          SELECT 1 FROM User_Group ug WHERE ug.groupID = g.groupID AND ug.userID = ?
+          SELECT 1 FROM User_Team ug WHERE ug.groupID = g.groupID AND ug.userID = ?
         )
       ORDER BY g.createdAt DESC
     `, [workspaceID, req.user.userID]);
@@ -233,10 +233,10 @@ router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
 router.post("/:workspaceID/join-groups/:groupID", mustBeLoggedIn, async (req, res) => {
   try {
     const { workspaceID, groupID } = req.params;
-    const [groups] = await pool.query("SELECT groupID FROM `Group` WHERE groupID = ? AND workspaceID = ?", [groupID, workspaceID]);
+    const [groups] = await pool.query("SELECT groupID FROM `Team` WHERE groupID = ? AND workspaceID = ?", [groupID, workspaceID]);
     if (!groups.length) return res.redirect(`/workspaces/${workspaceID}/join-groups?message=That+group+is+no+longer+available.`);
     await pool.query(
-      "INSERT IGNORE INTO User_Group (userID, workspaceID, groupID, isOwner) VALUES (?, ?, ?, 'false')",
+      "INSERT IGNORE INTO User_Team (userID, workspaceID, groupID, isOwner) VALUES (?, ?, ?, 'false')",
       [req.user.userID, workspaceID, groupID]
     );
     res.redirect(`/workspaces/${workspaceID}/join-groups?message=Request+sent!+You+have+been+added+to+the+group.`);
