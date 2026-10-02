@@ -100,7 +100,11 @@
 
       if (!skill) return;
 
-      if (skills.includes(skill)) {
+      const alreadyExists = skills.some(
+          existingSkill => existingSkill.toLowerCase() === skill.toLowerCase()
+      );
+
+      if (alreadyExists) {
           input.value = "";
           return;
       }
