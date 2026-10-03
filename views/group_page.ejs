@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head2') %>
+
+<body class="user-workspace-page">
+  <svg style="display:none;">
+  <filter id="displacementFilter">
+    <feTurbulence type="turbulence"
+      baseFrequency="0.01"
+      numOctaves="2"
+      result="turbulence" />
+    <feDisplacementMap in="SourceGraphic"
+      in2="turbulence"
+      scale="100"
+      xChannelSelector="R"
+      yChannelSelector="G" />
+  </filter>
+</svg>
+  <%- include('includes/header') %>
+
+  <div class="userWorkPage">
+    <img src="/images/UserWorkspaceBack.webp" alt="" class="userWorkBackground">
+
+    <svg class="wb-svg" aria-hidden="true">
+      <defs>
+        <filter id="workspace-bubb">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+          <feColorMatrix in="blur" mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+          <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="wb-gradients-container">
+      <div class="wb-g1"></div>
+      <div class="wb-g2"></div>
+      <div class="wb-g3"></div>
+      <div class="wb-g4"></div>
+      <div class="wb-g5"></div>
+      <div class="wb-g6"></div>
+      <div class="wb-g7"></div>
+      <div class="wb-g8"></div>
+      <div class="wb-g9"></div>
+    </div>
+
+    <main class="userWorkGroupList">
+
+      <div class="workspacetitleTop">
+        <a href="/workspaces/<%= workspace.workspaceID %>" class="userWorkbackButDimensions">
+          <img src="/images/workspacebackBut.svg" alt="Back" class="userWorkbackBut userWorkbackButNORMAL">
+          <img src="/images/workspacebackHOVER.svg" alt="Back" class="userWorkbackBut userWorkbackButHOVER">
+        </a>
+        <h1 class="workspaceNameTitle"><%= group.groupName %></h1>
+        <div class="workspaceMenu">
+          <button class="userWorkDropDownDim" type="button" aria-label="Group options" onclick="this.closest('.workspaceMenu').classList.toggle('open'); this.classList.toggle('open')">
+            <img src="/images/workspacedropdown.svg" alt="" class="userWorkDropDown userWorkDropDownNORMAL">
+            <img src="/images/workspacedropdownHOVER.svg" alt="" class="userWorkDropDown userWorkDropDownHOVER">
+            <img src="/images/workspacedropdownCLICKED.svg" alt="" class="userWorkDropDown userWorkDropDownCLICKED">
+          </button>
+          <div class="workspaceMenuOptions">
+            <% if (isGroupOwner) { %>
+              <button type="button" data-group-name="<%= group.groupName %>" onclick="workspaceModal.openRename(this.dataset.groupName)">Rename</button>
+              <button type="button" class="workspaceDeleteOption" onclick="workspaceModal.openDelete()">Delete</button>
+            <% } else { %>
+              <button type="button" onclick="workspaceModal.openInfo()">Info</button>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="userWorkContainer groupContainer">
+
+        <!-- LEFT PANEL -->
+        <section class="userWorkLeft groupMembersPanel">
+          <h2 class="userWorkYourGroups">Members</h2>
+          <div class="userWorkGroupsList groupMembersList">
+            <% if (!members || members.length === 0) { %>
+              <p class="userWorkLeftempty">No members yet.</p>
+            <% } else { %>
+              <% members.forEach(member => { %>
+                <div class="groupMember">
+                  <% if (member.profilePicture) { %>
+                    <img src="<%= member.profilePicture %>" alt="" class="groupMemberAvatar">
+                  <% } else { %>
+                    <svg class="groupMemberAvatar groupMemberAvatarEmpty" viewBox="0 0 24 24" fill="none" stroke="#fff5fa" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="11"></circle>
+                      <circle cx="12" cy="9.5" r="3.5"></circle>
+                      <path d="M5 19.5c1.5-3.2 4-4.5 7-4.5s5.5 1.3 7 4.5"></path>
+                    </svg>
+                  <% } %>
+                  <span class="groupMemberName"><%= member.name %></span>
+                </div>
+              <% }) %>
+            <% } %>
+          </div>
+        </section>
+
+        <!-- RIGHT PANEL -->
+        <section class="userWorkRight">
+          <div class="userWorkRightorder groupRightorder">
+            <a href="/groups/<%= group.groupID %>/chat" class="userWorkRightBox">
+              <span class="userWorkChatName">Chat</span>
+              <img src="/images/workspacechat.svg" alt="Chat" class="userWorkGroupchatImg">
+            </a>
+            <a href="/groups/<%= group.groupID %>/planning" class="userWorkRightBox">
+              <span class="userWorkChatName">Planning</span>
+              <svg class="groupPlanIcon" viewBox="0 0 24 24" fill="none" stroke="#FFA5E7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4.5" width="18" height="16" rx="3"></rect>
+                <path d="M3 9.5h18M8 2.5v4M16 2.5v4"></path>
+                <path d="M9 9.5v11M15 9.5v11M3 13.5h18M3 17h18" stroke-width="1"></path>
+              </svg>
+            </a>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="workspace-modal" class="workspaceModal" aria-hidden="true">
+  <section class="workspaceModalDialog" role="dialog" aria-modal="true" aria-labelledby="workspace-modal-title">
+    <button class="workspaceModalClose" type="button" aria-label="Close" onclick="workspaceModal.close()">&times;</button>
+
+    <% if (isGroupOwner) { %>
+      <form id="rename-modal-form" method="post" action="/groups/<%= group.groupID %>/rename">
+        <h2 id="workspace-modal-title">Rename Group</h2>
+        <label for="rename-workspace-input">Group Name</label>
+        <input id="rename-workspace-input" name="groupName" type="text" maxlength="100" required>
+        <div class="workspaceModalActions">
+          <button type="button" class="workspaceModalCancel" onclick="workspaceModal.close()">Cancel</button>
+          <button type="submit" class="workspaceModalPrimary">Save Name</button>
+        </div>
+      </form>
+
+      <form id="delete-modal-form" method="post" action="/groups/<%= group.groupID %>/delete" hidden>
+        <h2>Delete Group?</h2>
+        <p>This will permanently delete the group and remove all of its members.</p>
+        <div class="workspaceModalActions">
+          <button type="button" class="workspaceModalCancel" onclick="workspaceModal.close()">Cancel</button>
+          <button type="submit" class="workspaceModalDelete">Delete group</button>
+        </div>
+      </form>
+    <% } %>
+
+    <div id="info-modal-content" hidden>
+      <h2>About This Group</h2>
+      <p><%= group.description || 'No Description Provided.' %></p>
+    </div>
+  </section>
+</div>
+<script>
+  window.workspaceModal = {
+    modal: document.getElementById('workspace-modal'),
+    renameForm: document.getElementById('rename-modal-form'),
+    deleteForm: document.getElementById('delete-modal-form'),
+    infoContent: document.getElementById('info-modal-content'),
+    hideAll() {
+      if (this.renameForm) this.renameForm.hidden = true;
+      if (this.deleteForm) this.deleteForm.hidden = true;
+      if (this.infoContent) this.infoContent.hidden = true;
+    },
+    show() {
+      this.modal.classList.add('is-open');
+      this.modal.setAttribute('aria-hidden', 'false');
+    },
+    openRename(currentName) {
+      this.hideAll();
+      this.renameForm.hidden = false;
+      this.show();
+      const input = document.getElementById('rename-workspace-input');
+      input.value = currentName;
+      input.focus();
+      input.select();
+    },
+    openDelete() {
+      this.hideAll();
+      this.deleteForm.hidden = false;
+      this.show();
+    },
+    openInfo() {
+      this.hideAll();
+      this.infoContent.hidden = false;
+      this.show();
+    },
+    close() {
+      this.modal.classList.remove('is-open');
+      this.modal.setAttribute('aria-hidden', 'true');
+    }
+  };
+  workspaceModal.modal.addEventListener('click', (event) => {
+    if (event.target === workspaceModal.modal) workspaceModal.close();
+  });
+</script>
+
+</body>
+</html>
