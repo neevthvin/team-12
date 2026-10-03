@@ -74,6 +74,18 @@ In Terminal:
 	- SHOW TABLES;
 	- exit
 
+For an existing database created with the older group schema, run the migration before `001_workspace_teams.sql`:
+
+	- SOURCE /yourPath/migrations/003_group_schema.sql;
+
+Run this only when the database still has the `Group` and `User_Group` tables. Fresh databases should use `schema.sql` above and do not need this migration.
+
+For an existing database that does not yet have the workspace description column, run:
+
+	- SOURCE /yourPath/migrations/002_workspace_description.sql;
+
+Do not run this migration if `Workspace.description` already exists; fresh databases get it from `schema.sql`.
+
 - npm run dev
 - Visit localhost:3000 on browser
 
