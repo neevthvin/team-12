@@ -51,11 +51,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 3. Fill in a unique username, strong password, and an email unaffiliated with an existing account.
 4. Clicking Sign Up will direct the user to the Profile Details page, Skills Selection page, and Weekly Availability page. This can be skipped and done later in the profile page.
 
-![Groupify Sign-in Page](images/signuppage.png)
+![Groupify Sign-in Page](public/images/signuppage.png)
 
 *Figure 1. Sign-up Page*
 
-![Groupify Sign-up page](images/signuperror.png)
+![Groupify Sign-up page](public/images/signuperror.png)
 
 *Figure 2. Sign-up Page with error messages*
 
@@ -109,11 +109,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 5. Fill out a workspace name and description (optional) and click Create Workspace. The user will receive an error message if the workspace name is shorter than 3 characters.
 6. When the workspace is created or joined, it will appear on the homepage and can be clicked to access it.
    
-![Groupify Homepage (No Workspaces Yet)](images/homepagenowork.png)
+![Groupify Homepage (No Workspaces Yet)](public/images/homepagenowork.png)
 
 *Figure 1. Homepage (No Workspaces Yet)*
 
-![Groupify Join Workspace Page](images/joinwork.png)
+![Groupify Join Workspace Page](public/images/joinwork.png)
 
 *Figure 2. Join Workspace Page*
 
@@ -128,11 +128,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 5. On the Workspace page, click Create Group.
 6. On the Create Group page, enter in a group name, the description (optional), and join type (public/private), and then click Create Group.
 
-![Groupify Create Group Page/UI NOT FINISHED](images/creategroup.png)
+![Groupify Create Group Page/UI NOT FINISHED](public/images/creategroup.png)
 
 *Figure 1. Create Group Page*
 
-![Groupify Join Group Page/UI NOT FINISHED](images/joingroup.png)
+![Groupify Join Group Page/UI NOT FINISHED](public/images/joingroup.png)
 
 *Figure 2. Join Group Page*
 
@@ -154,11 +154,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 4. On the Group page, click Groupchat to access the group page's groupchat.
 5. The user can type in a message and send a message to the groupchat by clicking the send button, or click on an individual user on the left panel to chat individually.
 
-![Groupify Workspace Groupchat/UI NOT FINISHED](images/workgroupchat.png)
+![Groupify Workspace Groupchat/UI NOT FINISHED](public/images/workgroupchat.png)
 
 *Figure 1. Groupchat Page in a Workspace*
 
-![Groupify Group Groupchat/UI NOT FINISHED](images/groupgroupchat.png)
+![Groupify Group Groupchat/UI NOT FINISHED](public/images/groupgroupchat.png)
 
 *Figure 2. Groupchat Page in a Workspace*
 
@@ -172,11 +172,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 4. On the Group page, click Planning to access the Planning page.
 5. The user can type in a message and send a message to the groupchat by clicking the send button, or click on an individual user on the left panel to chat individually.
 
-![Groupify Planning Page/UI NOT FINISHED](images/planningpage.png)
+![Groupify Planning Page/UI NOT FINISHED](public/images/planningpage.png)
 
 *Figure 1. Planning Page*
 
-![Groupify Planning Page with content filled out/UI NOT FINISHED](images/planningpagecontent.png)
+![Groupify Planning Page with content filled out/UI NOT FINISHED](public/images/planningpagecontent.png)
 
 *Figure 2. Planning Page with content filled out*
 
@@ -189,11 +189,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 3. Click on a the AI Optimal Group Suggestions button (the small button with the stars).
 4. Scroll on the AI Suggestions page to see the personalized suggestions for group formations.
 
-![Groupify AI Suggestions Page/UI NOT FINISHED](images/aisuggestionspage.png)
+![Groupify AI Suggestions Page/UI NOT FINISHED](public/images/aisuggestionspage.png)
 
 *Figure 1. AI Suggestions Page*
 
-![Groupify AI Suggestions Page Continued/UI NOT FINISHED](images/aisuggestionspage2.png)
+![Groupify AI Suggestions Page Continued/UI NOT FINISHED](public/images/aisuggestionspage2.png)
 
 *Figure 2. AI Suggestions Page Continued*
 
@@ -210,11 +210,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 7. Click Edit Availability to get taken to the Weekly Availability page to edit one's availability. Click on the available button next to the days one is available on, and enter in the start and end time of one's availability on that day.
 8. Click Exit if the user does not want to save changes
 
-![Groupify Profile Page/UI NOT FINISHED](images/profilepage.png)
+![Groupify Profile Page/UI NOT FINISHED](public/images/profilepage.png)
 
 *Figure 1. Profile Page*
 
-![Groupify Edit Profile Page/UI NOT FINISHED](images/editprofile.png)
+![Groupify Edit Profile Page/UI NOT FINISHED](public/images/editprofile.png)
 
 *Figure 2. Edit Profile Page*
 
