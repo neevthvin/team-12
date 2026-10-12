@@ -222,15 +222,12 @@ Application Link: https://team-12-6vv0.onrender.com/
 
 
 ## 6. Troubleshooting examples
-| [Problem1] | [Cause1] | [Solution 1]|
+| [Problem] | [Cause] | [Solution]|
+|---|---|---|
 | App will not launch | Missing dependencies | Run `npm install` before launching. |
-| [Problem 2] |[Cause 2] | [Solution 2]
 | Login fails | Incorrect credentials | Verify email spelling or click "Reset Password". |
-| [Problem 3] |[Cause 3] | [Solution 3]
 | Reset OTP email did not arrive | Email delay, incorrect email inputted | Verify email is correct and click resend code and wait. |
-| [Problem 4] |[Cause 4] | [Solution 4]
 | Workspace could not be joined | Join code is incorrect or user is already in workspace | Verify the join code is correct and check if one is already in the workspace |
-| [Problem 5] |[Cause 5] | [Solution 5]
 | AI Suggestions are inaccurate | Not enough users in workspace or profile page is not filled out for enough users | Fill out one's profile page, and share the join code with more users |
 ---
 
