@@ -222,7 +222,7 @@ Application Link: https://team-12-6vv0.onrender.com/
 
 
 ## 6. Troubleshooting examples
-| [Problem] | [Cause] | [Solution]|
+| Problem | Cause | Solution|
 |---|---|---|
 | App will not launch | Missing dependencies | Run `npm install` before launching. |
 | Login fails | Incorrect credentials | Verify email spelling or click "Reset Password". |
