@@ -1,7 +1,7 @@
-# Groupify – User Manual
-**Version:** 1
-**Team Name:** The Survivors
-**Date:** 10/05/2026
+# Groupify – User Manual  
+**Version:** 1  
+**Team Name:** The Survivors  
+**Date:** 10/05/2026  
 
 
 ---
