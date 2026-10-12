@@ -72,11 +72,11 @@ Application Link: https://team-12-6vv0.onrender.com/
 7. After submitting the email, the user is taken to the Reset Password page and is sent a OTP to their email address.
 8. With the OTP, the user can create a new password, confirm the new password, and log in.
 
-![Groupify Sign-in Page](/images/signinpage.png)
+![Groupify Sign-in Page](public/images/signinpage.png)
 
 *Figure 1. Log-in Page*
 
-![Groupify Sign-in Page with error messages](/images/signinerror.png)
+![Groupify Sign-in Page with error messages](public/images/signinerror.png)
 
 *Figure 2. Log-in Page with error messages*
 
