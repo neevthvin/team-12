@@ -232,8 +232,8 @@ Application Link: https://team-12-6vv0.onrender.com/
 ---
 
 ## 7. Contact Information
-- **Support Email:**groupifya@gmail.com
-- ** Project Repository:**https://github.com/tobifotis/team-12 
+- **Support Email:** groupifya@gmail.com
+- **Project Repository:** https://github.com/tobifotis/team-12 
 
 
 ## 8. FAQ
