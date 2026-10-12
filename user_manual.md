@@ -100,9 +100,9 @@ Application Link: https://team-12-6vv0.onrender.com/
 **How to use it:**
 1. Be signed in to an account
 2. Click on Join Workspace to join a workspace with an existing code given to the user.
-3. Enter the code on into the form box and click join. If the user is already in the workspace or if the code is invalid, there will be an error message.
+3. Enter the code on into the form box and click Join Workspace. If the user is already in the workspace or if the code is invalid, there will be an error message.
 4. Click on Create Workspace to create a workspace.
-5. Fill out a workspace name and description (optional) and click create. The user will receive an error message if the workspace name is shorter than 3 characters.
+5. Fill out a workspace name and description (optional) and click Create Workspace. The user will receive an error message if the workspace name is shorter than 3 characters.
 6. When the workspace is created or joined, it will appear on the homepage and can be clicked to access it.
 
 ![Groupify Homepage (No Workspaces Yet)](images/homepagenowork.png)
@@ -138,5 +138,5 @@ e.g: App will not launch | Missing dependencies | Run `npm install` before launc
 **Q:** Can I create or join groups?  
 **A:** Yes. You can create a new group or join an existing one if you have an invitation or access link.
 
-**Q:** Do I have to pay for to use this application
+**Q:** Do I have to pay for to use this application?  
 **A:** No. This application is completely free to use.
