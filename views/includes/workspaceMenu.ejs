@@ -1,0 +1,22 @@
+<div class="workspaceMenu">
+  <button class="userWorkDropDownDim" type="button" aria-label="Workspace options" onclick="this.closest('.workspaceMenu').classList.toggle('open'); this.classList.toggle('open')">
+    <% if (typeof theme !== 'undefined' && theme === 'green') { %>
+      <img src="/images/greenDropdownClosed.svg" alt="" class="userWorkDropDown userWorkDropDownNORMAL">
+      <img src="/images/greenDropdownOpen.svg" alt="" class="userWorkDropDown userWorkDropDownCLICKED">
+    <% } else { %>
+      <img src="/images/workspacedropdown.svg" alt="" class="userWorkDropDown userWorkDropDownNORMAL">
+      <img src="/images/workspacedropdownHOVER.svg" alt="" class="userWorkDropDown userWorkDropDownHOVER">
+      <img src="/images/workspacedropdownCLICKED.svg" alt="" class="userWorkDropDown userWorkDropDownCLICKED">
+    <% } %>
+  </button>
+  <div class="workspaceMenuOptions">
+    <% if (isWorkspaceOwner) { %>
+      <button type="button" data-workspace-name="<%= workspace.workspaceName %>" onclick="workspaceModal.openRename(this.dataset.workspaceName)">Rename</button>
+      <button type="button" onclick="workspaceModal.openInfo()">Info</button>
+      <button type="button" class="workspaceDeleteOption" onclick="workspaceModal.openDelete()">Delete</button>
+    <% } else { %>
+      <button type="button" onclick="workspaceModal.openInfo()">Info</button>
+      <button type="button" class="workspaceDeleteOption" onclick="workspaceModal.openLeave()">Leave</button>
+    <% } %>
+  </div>
+</div>

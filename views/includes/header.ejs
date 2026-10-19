@@ -30,36 +30,34 @@
 </header>
 
 <script>
-  // Scroll functionality (existing)
+  // Scroll functionality
   const header = document.querySelector('.header');
   let lastScrollY = window.scrollY;
   let ticking = false;
 
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
+    if (ticking) return;
+    ticking = true;
 
-        if (currentScrollY > lastScrollY && currentScrollY > 80) {
-          header.classList.add('hidden');
-        } else {
-          header.classList.remove('hidden');
-        }
+    requestAnimationFrame(() => {
+      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const currentScrollY = Math.min(Math.max(0, window.scrollY), maxY);
+      const delta = currentScrollY - lastScrollY;
 
-        if (currentScrollY > 10) {
-          header.classList.add('scrolled');
-        } else {
-          header.classList.remove('scrolled');
-        }
-
+      if (delta > 6 && currentScrollY > 80) {
+        header.classList.add('hidden');       // scrolling down
         lastScrollY = currentScrollY;
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
+      } else if (delta < -6 || currentScrollY <= 10) {
+        header.classList.remove('hidden');    // scrolling up, or at the very top
+        lastScrollY = currentScrollY;
+      }
 
-  // Profile dropdown functionality (new)
+      header.classList.toggle('scrolled', currentScrollY > 10);
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // Profile dropdown functionality
   document.addEventListener('DOMContentLoaded', () => {
     const profileBtn = document.getElementById('profileBtn');
     const dropdown = document.getElementById('profileDropdown');
@@ -70,12 +68,12 @@
         dropdown.classList.toggle('active');
       });
       
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
+    }
+  });
+  document.addEventListener('click', (e) => {
         if (!profileBtn.contains(e.target) && !dropdown.contains(e.target)) {
           dropdown.classList.remove('active');
         }
       });
-    }
-  });
+  
 </script>

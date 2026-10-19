@@ -318,4 +318,101 @@ router.get("/:workspaceID/suggestions", mustBeLoggedIn, async (req, res) => {
   }
 });
 
+router.get("/:workspaceID/members", mustBeLoggedIn, async (req, res) => {
+  try {
+    const workspaceID = req.params.workspaceID;
+ 
+    const [workspaceRows] = await pool.query(
+      "SELECT * FROM Workspace WHERE workspaceID = ?",
+      [workspaceID]
+    );
+    if (!workspaceRows.length) return res.redirect("/workspaces");
+ 
+    const [accessRows] = await pool.query(
+      "SELECT 1 FROM User_Workspace WHERE workspaceID = ? AND userID = ?",
+      [workspaceID, req.user.userID]
+    );
+    if (!accessRows.length) return res.redirect("/workspaces");
+ 
+    const [members] = await pool.query(
+      `SELECT u.userID, u.username, u.email, uw.isOwner, up.profilePicture,
+          COALESCE(NULLIF(TRIM(up.displayName), ''), u.username) AS displayName
+      FROM User_Workspace uw
+      JOIN User u ON u.userID = uw.userID
+      LEFT JOIN User_Profile up ON up.userID = u.userID
+      WHERE uw.workspaceID = ?
+      ORDER BY uw.isOwner DESC, COALESCE(NULLIF(TRIM(up.displayName), ''), u.username) ASC`,
+      [workspaceID]
+    );
+ 
+    const workspace = workspaceRows[0];
+    res.render("WorkspaceMembers", {
+      workspace,
+      members,
+      isWorkspaceOwner: Number(workspace.userID) === Number(req.user.userID),
+      message: req.query.message || ""
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+ 
+router.post("/:workspaceID/members/:memberID/remove", mustBeLoggedIn, async (req, res) => {
+  const { workspaceID, memberID } = req.params;
+  const back = (msg) =>
+    res.redirect(`/workspaces/${workspaceID}/members?message=${encodeURIComponent(msg)}`);
+ 
+  let connection;
+  try {
+    const [workspaceRows] = await pool.query(
+      "SELECT userID FROM Workspace WHERE workspaceID = ?",
+      [workspaceID]
+    );
+    if (!workspaceRows.length) return res.redirect("/workspaces");
+ 
+    if (Number(workspaceRows[0].userID) !== Number(req.user.userID)) {
+      return res.status(403).redirect(`/workspaces/${workspaceID}/members`);
+    }
+    if (Number(memberID) === Number(req.user.userID)) {
+      return back("The owner can't be removed from the workspace.");
+    }
+    const [memberRows] = await pool.query(
+      `SELECT COALESCE(NULLIF(TRIM(up.displayName), ''), u.username) AS name
+      FROM User u
+      LEFT JOIN User_Profile up ON up.userID = u.userID
+      WHERE u.userID = ?`,
+      [memberID]
+    );
+    const memberName = memberRows.length ? memberRows[0].name : "Member";
+ 
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+ 
+    await connection.query(
+      "DELETE FROM User_Team WHERE userID = ? AND workspaceID = ?",
+      [memberID, workspaceID]
+    );
+    const [result] = await connection.query(
+      "DELETE FROM User_Workspace WHERE userID = ? AND workspaceID = ? AND isOwner = FALSE",
+      [memberID, workspaceID]
+    );
+ 
+    await connection.commit();
+    back(
+      result.affectedRows
+        ? `${memberName} was removed from the workspace.`
+        : `${memberName} is no longer in this workspace.`
+    );
+  } catch (err) {
+    if (connection) await connection.rollback();
+    console.error(err);
+    res.status(500).send("Database error");
+  } finally {
+    if (connection) connection.release();
+  }
+});
+ 
+
 module.exports = router;
+
