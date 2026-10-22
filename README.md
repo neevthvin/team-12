@@ -80,6 +80,12 @@ For an existing database created with the older group schema, run the migration 
 
 Run this only when the database still has the `Group` and `User_Group` tables. Fresh databases should use `schema.sql` above and do not need this migration.
 
+If you already ran an earlier version of `003_group_schema.sql` and joining a
+group now returns `Database error`, check `User_Team` with `DESCRIBE User_Team;`.
+If it is missing both `workspaceID` and `isOwner`, run
+`migrations/005_user_team_workspace_columns.sql` once. The current
+`003_group_schema.sql` adds these columns for future legacy upgrades.
+
 For an existing database that does not yet have the workspace description column, run:
 
 	- SOURCE /yourPath/migrations/002_workspace_description.sql;

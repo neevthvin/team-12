@@ -125,8 +125,31 @@ router.get("/:groupID", mustBeLoggedIn, async (req, res) => {
             group,
             workspace: workspaceRows[0],
             members,
-            isGroupOwner: Number(group.userID) === Number(req.user.userID)
+            isGroupOwner: Number(group.userID) === Number(req.user.userID),
+            message: req.query.message || ""
         })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).send("Database error")
+    }
+})
+
+router.post("/:groupID/invite", mustBeLoggedIn, async (req, res) => {
+    const groupID = req.params.groupID
+    const invitee = typeof req.body.invitee === "string" ? req.body.invitee.trim() : ""
+    const back = `/groups/${groupID}`
+    if (!invitee) return res.redirect(`${back}?message=Enter+a+username+or+email+address.`)
+    try {
+        const [groups] = await pool.query("SELECT groupID, workspaceID FROM `Team` WHERE groupID = ? AND userID = ?", [groupID, req.user.userID])
+        if (!groups.length) return res.status(403).redirect("/workspaces")
+        const [users] = await pool.query("SELECT userID FROM User WHERE username = ? OR email = ?", [invitee, invitee])
+        if (!users.length) return res.redirect(`${back}?message=No+user+found+with+that+username+or+email.`)
+        const inviteeID = users[0].userID
+        if (Number(inviteeID) === Number(req.user.userID)) return res.redirect(`${back}?message=You+already+belong+to+this+group.`)
+        const [members] = await pool.query("SELECT 1 FROM User_Team WHERE groupID = ? AND userID = ?", [groupID, inviteeID])
+        if (members.length) return res.redirect(`${back}?message=That+person+is+already+a+member.`)
+        await pool.query("INSERT INTO Group_Invite (groupID, invitedBy, invitedUserID) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE status = 'pending', invitedBy = VALUES(invitedBy), createdAt = CURRENT_TIMESTAMP", [groupID, req.user.userID, inviteeID])
+        return res.redirect(`${back}?message=Invitation+sent.`)
     } catch (err) {
         console.error(err)
         return res.status(500).send("Database error")

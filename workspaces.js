@@ -204,12 +204,25 @@ router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
       "SELECT 1 FROM User_Workspace WHERE workspaceID = ? AND userID = ?",
       [workspaceID, req.user.userID]
     );
-    if (!workspaceRows.length || !accessRows.length) return res.redirect("/workspaces");
+    if (!workspaceRows.length) return res.redirect("/workspaces");
+
+    const [invites] = await pool.query(`
+      SELECT gi.groupID AS id, g.groupName AS name,
+             COALESCE(NULLIF(TRIM(p.displayName), ''), u.username) AS owner
+      FROM Group_Invite gi
+      JOIN \`Team\` g ON g.groupID = gi.groupID
+      JOIN User u ON u.userID = gi.invitedBy
+      LEFT JOIN User_Profile p ON p.userID = u.userID
+      WHERE g.workspaceID = ? AND gi.invitedUserID = ? AND gi.status = 'pending'
+      ORDER BY gi.createdAt DESC
+    `, [workspaceID, req.user.userID]);
+    if (!accessRows.length && !invites.length) return res.redirect("/workspaces");
 
     const [groups] = await pool.query(`
       SELECT g.groupID, g.groupName, g.ownerName
       FROM \`Team\` g
       WHERE g.workspaceID = ?
+        AND LOWER(g.visibility) = 'public'
         AND NOT EXISTS (
           SELECT 1 FROM User_Team ug WHERE ug.groupID = g.groupID AND ug.userID = ?
         )
@@ -221,9 +234,30 @@ router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
       name: group.groupName,
       owner: group.ownerName
     }));
-    const invites = [];
-
     res.render("JoinGroup", { workspace: workspaceRows[0], publicGroups, invites, message: req.query.message || "" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Database error");
+  }
+});
+
+router.post("/:workspaceID/join-groups/:groupID/invites/:action", mustBeLoggedIn, async (req, res) => {
+  const { workspaceID, groupID, action } = req.params;
+  if (action !== "accept" && action !== "decline") return res.sendStatus(404);
+  try {
+    const [invites] = await pool.query(`
+      SELECT gi.groupID FROM Group_Invite gi
+      JOIN \`Team\` g ON g.groupID = gi.groupID
+      WHERE gi.groupID = ? AND gi.invitedUserID = ? AND gi.status = 'pending' AND g.workspaceID = ?
+    `, [groupID, req.user.userID, workspaceID]);
+    if (!invites.length) return res.redirect(`/workspaces/${workspaceID}/join-groups?message=That+invitation+is+no+longer+available.`);
+    if (action === "accept") {
+      await pool.query("INSERT IGNORE INTO User_Workspace (userID, workspaceID, isOwner) VALUES (?, ?, FALSE)", [req.user.userID, workspaceID]);
+      await pool.query("INSERT IGNORE INTO User_Team (userID, workspaceID, groupID, isOwner) VALUES (?, ?, ?, 'false')", [req.user.userID, workspaceID, groupID]);
+    }
+    await pool.query("UPDATE Group_Invite SET status = ? WHERE groupID = ? AND invitedUserID = ?", [action === "accept" ? "accepted" : "declined", groupID, req.user.userID]);
+    const message = action === "accept" ? "Invitation+accepted." : "Invitation+declined.";
+    res.redirect(`/workspaces/${workspaceID}/join-groups?message=${message}`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
@@ -233,7 +267,7 @@ router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
 router.post("/:workspaceID/join-groups/:groupID", mustBeLoggedIn, async (req, res) => {
   try {
     const { workspaceID, groupID } = req.params;
-    const [groups] = await pool.query("SELECT groupID FROM `Team` WHERE groupID = ? AND workspaceID = ?", [groupID, workspaceID]);
+    const [groups] = await pool.query("SELECT groupID FROM `Team` WHERE groupID = ? AND workspaceID = ? AND LOWER(visibility) = 'public'", [groupID, workspaceID]);
     if (!groups.length) return res.redirect(`/workspaces/${workspaceID}/join-groups?message=That+group+is+no+longer+available.`);
     await pool.query(
       "INSERT IGNORE INTO User_Team (userID, workspaceID, groupID, isOwner) VALUES (?, ?, ?, 'false')",
