@@ -13,28 +13,47 @@ body {
 .header {
     width: 100%;
     height: 60px;
-    background: #FFFCFB;
+    background: transparent;
+    box-shadow: none;
     display: flex;
     align-items: center;
     /* include space between logo and button */
     justify-content: space-between;
     padding: 0 46px;
-     position: sticky;
+    position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 100;
     /* transition for both scroll and hide effects */
-    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1), border-radius 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1);
+    
 }
+
+.header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: #FFFCFB;
+    border-radius: 0;
+    box-shadow: 0 4px 18px rgba(92, 65, 133, 0.18);
+    transition: inset 0.4s ease, border-radius 0.4s ease;
+}
+
 
 /* header invisible when scrolled down */
 .header.hidden {
-    transform: translateY(-110%);
+    transform: translateY(-120%);
+}
+
+.header.scrolled::before {
+    inset: 0 12px;
+    border-radius: 22px;
 }
 
 /* rounding corners when scrolled */
 .header.scrolled 
 {
-    border-radius: 22px;
+    border-radius: 0px;
 }
 
 .logo 
@@ -61,15 +80,15 @@ nav {
     top: 100%;
     right: 0;
     background: #FFFCFB;
-    border-radius: 15px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, .28);
     display: none;
     flex-direction: column;
-    min-width: 160px;
+    min-width: 128px;
     z-index: 100;
     overflow: hidden;
     margin-top: 8px;
-    border: 1px solid #B8B8B8;
+    border: 1px solid #d1c3ca;
 }
 
 .profile-dropdown.active {
@@ -78,21 +97,22 @@ nav {
 
 .dropdown-item {
     font-family: 'Geologica', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    color: #09542E;
+    color: #1F4436;
     text-decoration: none;
-    padding: 12px 20px;
+    padding: 10px 14px;
     width: 100%;
     text-align: left;
     border: none;
     background: transparent;
-    transition: background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    transition: background 0.55s ease, color 0.25s ease;
 }
 
 .dropdown-item:hover {
-    background: #d3d2d0;
-    color: #000000;
+    background: rgba(0, 0, 0, .1);
+    color: #1F4436;
 }
 
 /* Profile button pointer cursor */
@@ -923,7 +943,7 @@ body:has(.create-workspace-page) .header {
   top: 0;
   left: 0;
   transform: translate(-10%, -65%);
-  width: 210px;
+  width: 140px;
   height: auto;
   z-index: 11;
   pointer-events: none;
@@ -934,7 +954,7 @@ body:has(.create-workspace-page) .header {
   bottom: 0;
   right: 0;
   transform: translate(40%, 30%);
-  width: 300px;
+  width: 200px;
   height: auto;
   z-index: 11;
   pointer-events: none;
@@ -957,11 +977,27 @@ body:has(.create-workspace-page) .header {
     align-items: center;
     gap: 14px;
     isolation: isolate;
+    overflow: hidden;
+    filter: drop-shadow(-8px -10px 46px #0000005f);
+    backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
 }
 
-  .create-workspace-page > .create-workspace-card {
-    flex-shrink: 0;
-  }
+.create-workspace-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 22px;
+  pointer-events: none;
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.5),
+              inset 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+
+.create-workspace-card > * {
+  position: relative;
+  z-index: 1;
+}
 
 .create-workspace-card h1 {
     font-family: 'Geologica', sans-serif;
@@ -990,12 +1026,32 @@ body:has(.create-workspace-page) .header {
 .cwbacktext {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     font-family: 'Geologica', sans-serif;
     font-size: 14px;
     font-weight: 500;
-    color: rgba(111, 111, 113, 0.9);
+    color: rgba(97, 97, 100, 0.9);
     text-decoration: none;
+}
+
+.cwbacktext .userWorkbackButDimensions {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(to right, rgba(173, 150, 126, 0.72), rgba(77, 138, 149, 0.72));
+    backdrop-filter: brightness(1.12) blur(6px);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.55),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+}
+
+.cwbacktext .userWorkbackBut {
+    width: 14px;
+    height: 14px;
+    transform: none;
+}
+
+.cwbacktext .userWorkbackButDimensions:hover {
+    background: linear-gradient(to right, rgba(149, 128, 107, 0.72), rgba(60, 115, 125, 0.72));
+    transform: scale(1.05);
 }
 
 .form-group label {
@@ -1010,27 +1066,33 @@ body:has(.create-workspace-page) .header {
 .form-group textarea {
     font-family: 'Geologica', sans-serif;
     font-size: 15px;
-    color: #2a3a40;
-    background: linear-gradient(to bottom, rgba(232, 255, 252, 0.80), rgba(255, 246, 241, 0.80));
+    color: #243237;
+    background: rgba(255, 255, 255, 0.28);
     border: none;
     border-radius: 10px;
     padding: 10px 16px;
     width: 100%;
     box-sizing: border-box;
     outline: none;
-    transition: box-shadow 0.25s ease;
+    transition: box-shadow 0.25s ease, background 0.25s ease;
     resize: none;
     margin: 0;
+    backdrop-filter: brightness(1.12) blur(6px);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.7),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.4);
 }
 
 .form-group input[type="text"]::placeholder,
 .form-group textarea::placeholder {
-    color: #9298A3;
+    color: #51636c;
 }
 
 .form-group input[type="text"]:focus,
 .form-group textarea:focus {
-    box-shadow: 0 0 0 3px rgba(168, 193, 195, 0.9);
+    background: rgba(255, 255, 255, 0.38);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.7),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.4),
+                0 0 0 3px rgba(168, 193, 195, 0.9);
 }
 
 .form-group textarea {
@@ -1090,16 +1152,6 @@ body:has(.create-workspace-page) .header {
     width: 16px;
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #666666;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-    box-shadow: 0 0 0 2px #E2308D;
-}
-
 .form-dates {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1118,17 +1170,20 @@ body:has(.create-workspace-page) .header {
 
 .btn-create {
     font-family: 'Geologica', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #ffffff;
-    background: linear-gradient(to right, #E2308D, #5C4185);
+    font-size: 20px;
+    font-weight: 800;
+    color: #FFFCFB;
+    background: linear-gradient(to right, rgba(173, 150, 126, 0.72), rgba(77, 138, 149, 0.72));
     border: none;
-    border-radius: 12px;
-    padding: 14px;
-    width: 100%;
+    border-radius: 20px;
+    width: 260px;
+    height: 50px;
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    transition: filter 0.2s ease, transform 0.14s ease;
     margin: 0;
+    backdrop-filter: brightness(1.12) blur(6px);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.55),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
 }
 
   .group-create-submit {
@@ -1173,6 +1228,160 @@ body:has(.create-workspace-page) .header {
     filter: brightness(0.88);
     transform: scale(1.02);
 }
+
+/* mobile responsive */
+html:has(.create-workspace-page),
+body:has(.create-workspace-page) {
+  height: auto !important;
+}
+
+.create-workspace-page {
+  --under-bar: 0px;
+  position: relative;
+  inset: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: calc(100svh - 60px + var(--under-bar));
+  padding: 0 20px var(--under-bar);
+  overflow: hidden;
+  justify-content: center;
+  background: linear-gradient(to bottom, #FDDDC9, #C0E2E3);
+}
+
+.card-wrapper {
+  margin: 0;
+}
+
+.cw-sun {
+  position: absolute;
+  left: -60px;
+  top: -120px;
+}
+
+body:has(.create-workspace-page) .footer {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  html:has(.create-workspace-page) {
+    background: #FFFCFB;
+  }
+
+  body:has(.create-workspace-page) {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100%;
+    background: transparent;
+  }
+
+  body:has(.create-workspace-page) .header {
+    position: sticky !important;
+    top: 0 !important;
+    transition: transform 0.4s cubic-bezier(0.76, 0, 0.24, 1) !important;
+  }
+
+  body:has(.create-workspace-page) .header.hidden {
+    transform: translateY(-120%) !important;
+  }
+
+  body:has(.create-workspace-page) .header.scrolled {
+    border-radius: 0 !important;
+  }
+
+  .create-workspace-page {
+    --under-bar: 100px;
+    height: auto;
+    min-height: calc(100svh - 60px + var(--under-bar));
+    padding: 70px 20px var(--under-bar);
+    overflow: hidden;
+    overflow: clip;
+  }
+
+  .card-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .create-workspace-card {
+    width: 100%;
+  }
+
+  .cw-sun {
+    width: 220px;
+    left: -40px;
+    top: -40px;
+  }
+
+  .cloudTop { width: 110px; }
+
+  .cloudBottom {
+    width: 130px;
+    transform: translate(20%, 30%);
+  }
+
+  body:has(.create-workspace-page) .footer {
+    display: flex;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .create-workspace-card {
+    padding: 28px 22px;
+    gap: 12px;
+  }
+
+  .create-workspace-card h1 {
+    font-size: clamp(22px, 6.4vw, 28px);
+    letter-spacing: 0.5px;
+  }
+
+  .btn-create {
+    width: 100%;
+    max-width: 240px;
+    height: 46px;
+    font-size: 18px;
+  }
+
+  .cw-sun { width: 170px; }
+}
+
+@media (max-width: 480px) {
+  .form-dates { grid-template-columns: 1fr; }
+  .cloudTop { width: 90px; }
+  .cloudBottom { width: 100px; }
+}
+
+@media (max-width: 400px) {
+  .create-workspace-card { padding: 24px 18px; }
+  .create-workspace-card h1 { font-size: clamp(19px, 6vw, 22px); }
+}
+
+@media (max-width: 1100px) {
+  html:has(.create-workspace-page) {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  html body:has(.create-workspace-page) {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100%;
+    position: static !important;
+  }
+
+  html body:has(.create-workspace-page) .create-workspace-page {
+    position: relative !important;
+    height: auto !important;
+    overflow: clip;
+  }
+}
+
 /* Homepage/Workspace page */
  
 
@@ -1789,19 +1998,38 @@ body:has(.create-workspace-page) .header {
   right: 0;
   bottom: 0;
   overflow: hidden;
-  filter: saturate(1.1);
-  /* color of bubbles */
-  --wb-color1: 32, 29, 108;
+  filter: contrast(1.2);
+  isolation: isolate;
+    --wb-color1: 47, 35, 114;
     --wb-color2: 100, 45, 100;
-    --wb-color3: 123, 102, 74;
+    --wb-color3: 99, 154, 158;
     --wb-color4: 115, 99, 132;
-    --wb-color5: 83, 59, 119;
-    --wb-color6: 71, 41, 126;
+    --wb-color5: 94, 60, 126;
+    --wb-color6: 83, 45, 132;
     --wb-color7: 99, 62, 100;
-    --wb-color8: 42, 39, 86;
+    --wb-color8: 51, 42, 95;
     --wb-color-interactive: 226, 48, 141;
     --wb-circle-size: 80%;
     --wb-blending: hard-light;
+}
+
+.workspaceMenuOptions,
+.workspaceModalDialog {
+  filter: contrast(0.8333);
+}
+.userWorkDropDown {
+  filter: contrast(0.8333);
+}
+@media (hover: hover) {
+  .userWorkDropDownDim:not(.open):hover .userWorkDropDownNORMAL,
+  .userWorkDropDownDim.open:hover .userWorkDropDownCLICKED {
+    filter: brightness(0.84) contrast(0.8333);
+  }
+}
+.members-page .workspaceMenuOptions,
+.members-page .workspaceModalDialog,
+.members-page .userWorkDropDown {
+  filter: none;
 }
 
 .wb-svg {
@@ -1850,7 +2078,6 @@ body:has(.create-workspace-page) .header {
     opacity: 1;
 }
 
-/* gold bubble — top right */
 .wb-g3 {
     position: absolute;
     background: radial-gradient(circle at center, rgba(var(--wb-color3), 0.8) 0, rgba(var(--wb-color3), 0) 50%) no-repeat;
@@ -1967,7 +2194,7 @@ body:has(.create-workspace-page) .header {
   position: fixed;
   top: 60px;
   left: 0;
-  opacity: 0;
+  opacity: 0%;
   width: 100%;
   height: calc(100% - 60px);
   object-fit: cover;
@@ -1989,18 +2216,18 @@ body:has(.create-workspace-page) .header {
     mix-blend-mode: soft-light;
     opacity: 1;
     background:
-        radial-gradient(ellipse 45% 30% at 8% 3%,  #642d64 0%, #5d2564 30%, transparent 95%),
-        radial-gradient(ellipse 35% 22% at 18% 0%, #652a72 0%, transparent 95%),
-        radial-gradient(ellipse 40% 25% at 48% 0%, #7e7257 0%, #756a55 35%, transparent 95%),
-        radial-gradient(ellipse 35% 20% at 62% 2%, #7b664a 0%, transparent 95%),
-        radial-gradient(ellipse 45% 30% at 88% 5%, #68767d 0%, #736384 40%, transparent 95%),
-        radial-gradient(ellipse 50% 40% at 100% 15%, #3e3e65 0%, transparent 95%),
-        radial-gradient(ellipse 60% 55% at 30% 35%, #38235d 0%, #331f70 40%, transparent 95%),
-        radial-gradient(ellipse 55% 50% at 65% 30%, #2d216f 0%, #201d6c 45%, transparent 95%),
-        radial-gradient(ellipse 60% 55% at 15% 65%, #291c46 0%, #261d50 40%, transparent 95%),
-        radial-gradient(ellipse 65% 60% at 75% 60%, #2a2756 0%, #222755 40%, transparent 95%),
-        radial-gradient(ellipse 70% 60% at 45% 85%, #211e3a 0%, #1a1830 45%, transparent 95%),
-        linear-gradient(160deg, #2b1d57 0%, #261d50 25%, #201d6c 50%, #2a2756 75%, #211e3a 100%);
+    radial-gradient(ellipse 45% 30% at 8% 3%,  #642d64 0%, #5d2564 30%, transparent 95%),
+    radial-gradient(ellipse 35% 22% at 18% 0%, #652a72 0%, transparent 95%),
+    radial-gradient(ellipse 40% 25% at 48% 0%, #867145 0%, #876b35 15%, transparent 95%),
+    radial-gradient(ellipse 35% 20% at 62% 2%, #7b664a 0%, transparent 95%),
+    radial-gradient(ellipse 45% 30% at 88% 5%, #68767d 0%, #736384 40%, transparent 95%),
+    radial-gradient(ellipse 50% 40% at 100% 15%, #3e3e65 0%, transparent 95%),
+    radial-gradient(ellipse 60% 55% at 30% 35%, #38235d 0%, #331f70 40%, transparent 95%),
+    radial-gradient(ellipse 55% 50% at 65% 30%, #2d216f 0%, #201d6c 45%, transparent 95%),
+    radial-gradient(ellipse 60% 55% at 15% 65%, #291c46 0%, #261d50 40%, transparent 95%),
+    radial-gradient(ellipse 65% 60% at 75% 60%, #2a2756 0%, #222755 40%, transparent 95%),
+    radial-gradient(ellipse 70% 60% at 45% 85%, #211e3a 0%, #1a1830 45%, transparent 95%),
+    linear-gradient(160deg, #2b1d57 0%, #261d50 25%, #201d6c 50%, #2a2756 75%, #211e3a 100%);
 }
 
 /* grain overlay on top of user workspace background */
@@ -2045,33 +2272,67 @@ body:has(.create-workspace-page) .header {
 
 .userWorkbackButDimensions {
   position: relative;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  flex-shrink: 0;
   cursor: pointer;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(249, 184, 252, 0.16);
+  filter: drop-shadow(-8px -10px 46px #0000005f);
+  backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
+  transition: background 0.25s ease, filter 0.2s ease, transform 0.2s ease;
+}
+
+.userWorkbackButDimensions::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.25),
+              inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+}
+
+.userWorkbackButDimensions:hover {
+  backdrop-filter: brightness(0.92) blur(2px) url(#displacementFilter);
+  background: rgba(187, 83, 216, 0.2);
+  transform: scale(1.03);
 }
 
 .userWorkbackBut {
-  position: absolute;
-  width: 38px;
-  height: 38px;
+  position: relative;
+  z-index: 1;
+  width: 23px;
+  height: 23px;
+  transform: translateY(1px);
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
-  transition: filter 0.2s ease;
   pointer-events: none;
+  transition: filter 0.2s ease;
 }
 
-/* Remove the two-image hover system */
-.userWorkbackButNORMAL { opacity: 1; }
-.userWorkbackButHOVER  { display: none; }
+.userWorkbackButDimensions:hover .userWorkbackBut {
+  filter: brightness(0.80);
+}
 
-.userWorkbackButDimensions:hover .userWorkbackButNORMAL {
-  filter: brightness(0.84);
+.members-page .userWorkbackButDimensions {
+  background: rgba(255, 255, 255, 0.35);
+  filter: drop-shadow(0 6px 16px rgba(92, 65, 133, 0.28));
+}
+.members-page .userWorkbackButDimensions::before {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+              inset 3px 3px 4px -2px rgba(255, 255, 255, 1),
+              inset 0 0 8px 1px rgba(255, 255, 255, 0.55);
+}
+.members-page .userWorkbackButDimensions:hover {
+  background: rgba(194, 92, 169, 0.2);
 }
 .workspaceNameTitle
 {
@@ -2081,6 +2342,7 @@ body:has(.create-workspace-page) .header {
   color: #FFF5FA;
   margin: 0;
 }
+
 
 /* dimensions of dropdown to the right of the name */
 .userWorkDropDownDim {
@@ -2125,8 +2387,11 @@ body:has(.create-workspace-page) .header {
 
 .userWorkDropDownHOVER { display: none; }
 
-.userWorkDropDownDim:not(.open):hover .userWorkDropDownNORMAL {
-  filter: brightness(0.84);
+
+
+
+.members-page .userWorkbackButDimensions:hover .userWorkbackBut {
+  filter: brightness(.84);
 }
 
 /* when clicked, normal version not shown */
@@ -2139,9 +2404,7 @@ body:has(.create-workspace-page) .header {
 {
    opacity: 1; 
 }
-.userWorkDropDownDim.open:hover .userWorkDropDownCLICKED {
-  filter: brightness(0.84);
-}
+
 .workspaceMenu { position: relative; }
 .workspaceMenuOptions {
   position: absolute;
@@ -2167,6 +2430,7 @@ body:has(.create-workspace-page) .header {
   text-align: left;
   font: 600 14px 'Geologica', sans-serif;
   cursor: pointer;
+  transition: background 0.55s ease, color 0.25s ease;
 }
 .workspaceMenuOptions button:hover { background: rgba(0, 0, 0, .1); }
 .workspaceMenuOptions .workspaceDeleteOption { color: #c23b6b; }
@@ -2175,13 +2439,44 @@ body:has(.create-workspace-page) .header {
   position: fixed;
   inset: 0;
   z-index: 20;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(24, 13, 42, .5);
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    backdrop-filter 0.3s ease,
+    -webkit-backdrop-filter 0.3s ease,
+    visibility 0s linear 0.3s;
 }
-.workspaceModal.is-open { display: flex; }
+
+.workspaceModal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition:
+    opacity 0.3s ease,
+    backdrop-filter 0.3s ease,
+    -webkit-backdrop-filter 0.3s ease,
+    visibility 0s;
+}
+
+.workspaceModalDialog {
+  transform: translateY(12px) scale(0.96);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.workspaceModal.is-open .workspaceModalDialog {
+  transform: translateY(0) scale(1);
+}
 .workspaceModalDialog {
   position: relative;
   width: min(100%, 390px);
@@ -2203,6 +2498,7 @@ body:has(.create-workspace-page) .header {
   background: #ffffff;
   color: #686173;
   font: 500 1rem 'Geologica', sans-serif;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .workspaceModalDialog input:focus {
   outline: none;
@@ -2472,9 +2768,7 @@ a.userWorkGroups:hover {
   background: rgba(249, 184, 252, 0.16);
   filter: drop-shadow(-8px -10px 46px #0000005f);
   backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
-  transition: 
-    background 0.25s ease,
-    filter 0.2s ease, background 0.2s ease;
+  transition: background 0.25s ease, filter 0.2s ease, transform 0.2s ease;
 }
 
 .userWorkRightBox::before {
@@ -2494,6 +2788,7 @@ a.userWorkGroups:hover {
 .userWorkRightBox:hover {
    backdrop-filter: brightness(0.92) blur(2px) url(#displacementFilter);
    background: rgba(187, 83, 216, 0.2);
+   transform: scale(1.02);
 }
 
 .userWorkRightBox img {
@@ -2563,9 +2858,7 @@ a.userWorkGroups:hover {
   border-radius: 16px;
   filter: drop-shadow(-8px -10px 46px #0000005f);
   backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
-  transition: 
-    background 0.25s ease,
-    filter 0.2s ease, background 0.2s ease;
+  transition: background 0.25s ease, filter 0.2s ease, transform 0.2s ease;
 }
 .userWorkJoin::before {
   content: '';
@@ -2582,6 +2875,7 @@ a.userWorkGroups:hover {
 .userWorkJoin:hover {
    backdrop-filter: brightness(0.92) blur(2px) url(#displacementFilter);
    background: rgba(187, 83, 216, 0.2);
+   transform: scale(1.02);
 }
 
 .aibuttonrow {
@@ -3246,9 +3540,12 @@ body:has(.availability-page) .availability-page {
 /* ── JOIN WORKSPACE PAGE ── */
 
 .join-workspace-page {
+    --under-bar: 0px;
     position: relative;
     width: 100%;
-    height: calc(100vh - 60px);
+    box-sizing: border-box;
+    height: calc(100svh - 60px + var(--under-bar));
+    padding-bottom: var(--under-bar);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -3265,6 +3562,7 @@ body:has(.availability-page) .availability-page {
     pointer-events: none;
     display: block;
 }
+
 
 .jwstars {
     position: fixed;
@@ -3397,8 +3695,8 @@ body:has(.availability-page) .availability-page {
     min-height: 0;
     background: linear-gradient(
         to right,
-        rgba(101, 128, 194, 0.60),
-        rgba(90,  57,  146, 0.60)
+        rgba(101, 128, 194, 0.50),
+        rgba(90, 57, 146, 0.50)
     );
     border-radius: 22px;
     padding: 36px 44px;
@@ -3408,25 +3706,26 @@ body:has(.availability-page) .availability-page {
     gap: 14px;
     isolation: isolate;
     margin-top: -125px;
+    overflow: hidden;
+    filter: drop-shadow(-8px -10px 46px #0000005f);
+    backdrop-filter: brightness(1.1) blur(2px) url(#displacementFilter);
 }
 
 .join-workspace-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    padding: 1.5px;
+    z-index: 0;
+    overflow: hidden;
     border-radius: 22px;
-    background: linear-gradient(
-        to bottom,
-        rgba(157, 144, 215, 0.55),
-        rgba(32, 21, 76, 0.5)
-    );
-    mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    mask-composite: exclude;
     pointer-events: none;
-    z-index: -1;
+    box-shadow: inset 3px 3px 4px -2px rgba(255, 255, 255, 0.5),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.4);
+}
+
+.join-workspace-card > * {
+    position: relative;
+    z-index: 1;
 }
 
 .join-workspace-card h1 {
@@ -3459,23 +3758,29 @@ body:has(.availability-page) .availability-page {
 .jwp-input {
     font-family: 'Geologica', sans-serif;
     font-size: 16px;
-    color: #FFFCFB;
-    background: rgba(159, 163, 234, 0.50);
+    color: #2a3a40;
+    background: rgba(255, 255, 255, 0.10);
     border: none;
     border-radius: 30px;
     padding: 0 24px;
     width: 100%;
     height: 48px;
     outline: none;
-    transition: box-shadow 0.25s ease;
+    transition: box-shadow 0.25s ease, background 0.25s ease;
+    backdrop-filter: brightness(1.12) blur(6px);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.7),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.4);
 }
 
 .jwp-input::placeholder {
-    color: rgba(255, 255, 255, 0.50);
+    color: #F2EEFA;
 }
 
 .jwp-input:focus {
-    box-shadow: 0 0 0 3px  rgba(172, 175, 253, 0.7);
+    background: rgba(250, 249, 249, 0.18);
+    box-shadow: inset 2px 2px 4px -2px rgba(202, 203, 206, 0.7),
+                inset 0 0 8px 1px rgba(200, 202, 207, 0.4),
+                0 0 0 3px rgba(147, 150, 224, 0.7);
 }
 
 .jwp-joinbtn {
@@ -3485,15 +3790,18 @@ body:has(.availability-page) .availability-page {
     color: #FFFCFB;
     background: linear-gradient(
         to right,
-        rgba(255, 207, 140, 0.68),
-        rgba(116, 210, 202, 0.68)
+        rgba(255, 207, 140, 0.58),
+        rgba(116, 210, 202, 0.58)
     );
     border: none;
     border-radius: 20px;
-    width: 160px;
+    width: 220px;
     height: 50px;
     cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.15s ease;
+    transition: filter 0.2s ease, transform 0.15s ease;
+    backdrop-filter: brightness(1.12) blur(6px);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.55),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
 }
 
 .jwp-joinbtn:hover {
@@ -3504,7 +3812,7 @@ body:has(.availability-page) .availability-page {
 .jwbacktext {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     font-family: 'Geologica', sans-serif;
     font-size: 14px;
     font-weight: 500;
@@ -3512,17 +3820,36 @@ body:has(.availability-page) .availability-page {
     text-decoration: none;
 }
 
-.jwbackBut {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-    -webkit-user-drag: none;
-    user-select: none;
-    transition: filter 0.2s ease;
+.jwbacktext .jwbackBut {
+    display: none;
 }
 
-.jwbacktext:hover .jwbackBut {
-    filter: brightness(0.84);
+.jwbacktext .userWorkbackButDimensions-jw {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, rgba(255, 207, 140, 0.68), rgba(116, 210, 202, 0.68));
+    backdrop-filter: brightness(1.12) blur(6px);
+    box-shadow: inset 2px 2px 4px -2px rgba(255, 255, 255, 0.55),
+                inset 0 0 8px 1px rgba(255, 255, 255, 0.35);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.jwbacktext .userWorkbackButDimensions-jw:hover {
+    background: linear-gradient(to right, rgba(230, 183, 110, 0.68), rgba(90, 180, 172, 0.68));
+    transform: scale(1.05);
+}
+
+.jwbacktext .userWorkbackButDimensions-jw img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 .join-workspace-card .error-list li {

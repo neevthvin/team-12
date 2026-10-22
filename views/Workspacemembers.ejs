@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('includes/head2') %>
+
+<body class="user-workspace-page members-page">
+  <svg style="display:none;">
+    <filter id="displacementFilter">
+      <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2" result="turbulence" />
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="100" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+  <%- include('includes/header') %>
+
+  <div class="userWorkPage">
+    <main class="userWorkGroupList">
+
+      <div class="workspacetitleTop">
+        <a href="/workspaces/<%= workspace.workspaceID %>" class="userWorkbackButDimensions" aria-label="Back">
+            <img src="/images/greenArrow.svg" alt="" class="userWorkbackBut">
+        </a>
+        <h1 class="workspaceNameTitle"><%= workspace.workspaceName %></h1>
+          <%- include('includes/workspaceMenu', { theme: 'green' }) %>
+      </div>
+
+    <div class="wmPanelWrap">
+      <section class="wmPanel">
+        <h2 class="wmTitle">Workspace Members</h2>
+
+        <% if (message) { %>
+          <p class="wmMessage" role="status"><%= message %></p>
+        <% } %>
+
+        <div class="wmSearchRow">
+          <div class="wmSearch" id="wmSearchBox">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.6" fill="none"/>
+              <path d="M13 13l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <input type="search" id="memberSearch" placeholder="Search Members..." aria-label="Search members" autocomplete="off">
+            <button type="button" class="wmClear" id="wmClear" aria-label="Clear search"><img src="/images/cross2.svg" alt="" class="wmClear-icon" width="16" height="16"></button>
+          </div>
+        </div>
+
+        <div class="wmTableScroll">
+          <table class="wmTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <% if (isWorkspaceOwner) { %><th class="wmActionsCol">Actions</th><% } %>
+              </tr>
+            </thead>
+            <tbody id="memberRows">
+              <% members.forEach(m => { const owner = Number(m.isOwner) === 1; %>
+                <tr data-search="<%= (m.displayName + ' ' + m.username + ' ' + m.email).toLowerCase() %>">
+                  <td>
+                    <div class="wmPerson">
+                      <span class="wmAvatar">
+                        <% if (m.profilePicture) { %>
+                          <img src="<%= m.profilePicture %>" alt="">
+                        <% } else { %>
+                          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+                            <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                            <path d="M3 17c0-3.3 3.1-5 7-5s7 1.7 7 5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                          </svg>
+                        <% } %>
+                      </span>
+                      <span class="wmIdentity">
+                        <span class="wmName"><%= m.displayName %></span>
+                        <span class="wmEmail"><%= m.email %></span>
+                      </span>
+                    </div>
+                  </td>
+                  <td><span class="wmBadge"><%= owner ? "Owner" : "Member" %></span></td>
+                  <% if (isWorkspaceOwner) { %>
+                    <td class="wmActionsCol">
+                      <% if (!owner) { %>
+                        <form method="POST"
+                              action="/workspaces/<%= workspace.workspaceID %>/members/<%= m.userID %>/remove"
+                              data-name="<%= m.username %>"
+                              class="wmRemoveForm">
+                          <button type="submit" class="wmRemove">Remove</button>
+                        </form>
+                      <% } %>
+                    </td>
+                  <% } %>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          <p class="wmNoResults" id="noResults" hidden>No members match your search.</p>
+        </div>
+      </section>
+            <img src="/images/rosieWM.webp" alt="" aria-hidden="true" class="wmRosieImg">
+        </div>
+    </main>
+  </div>
+
+  <%- include('includes/workspaceModal') %>
+
+  <script>
+
+    const search = document.getElementById("memberSearch");
+    const searchBox = document.getElementById("wmSearchBox");
+    const clearBtn = document.getElementById("wmClear");
+    const rows = document.querySelectorAll("#memberRows tr");
+    const noResults = document.getElementById("noResults");
+
+    function applyFilter() {
+      const q = search.value.trim().toLowerCase();
+      let visible = 0;
+      rows.forEach(row => {
+        const match = row.dataset.search.includes(q);
+        row.hidden = !match;
+        if (match) visible++;
+      });
+      noResults.hidden = visible > 0;
+      searchBox.classList.toggle("has-value", search.value.length > 0);
+    }
+    search.addEventListener("input", applyFilter);
+    clearBtn.addEventListener("click", () => {
+      search.value = "";
+      applyFilter();
+      search.focus();
+    });
+
+  </script>
+</body>
+</html>

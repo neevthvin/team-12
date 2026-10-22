@@ -12,6 +12,7 @@ const groupRoute = require("./groups")
 const profDetailRoute = require("./profile-details")
 const skillsRoute = require("./skills-selection")
 const profRoute = require("./profile")
+const planningRoute = require("./planning")
 
 const app = express()
 
@@ -140,6 +141,7 @@ app.use("/skills-selection", skillsRoute)
 app.use("/profile", profRoute)
 app.use("/workspaces", workRoute)
 app.use("/groups", groupRoute)
+app.use("/groups", planningRoute)
 
 app.get("/dashboard", (req, res) => {
     if (!req.user) return res.redirect("/signin")
