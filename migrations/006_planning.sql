@@ -1,0 +1,11 @@
+USE groupify;
+
+ALTER TABLE Tasks DROP FOREIGN KEY tasks_ibfk_2;
+ALTER TABLE Tasks
+  ADD CONSTRAINT tasks_ibfk_2
+  FOREIGN KEY (groupID) REFERENCES `Team`(groupID) ON DELETE CASCADE;
+
+ALTER TABLE Groupchat DROP FOREIGN KEY groupchat_ibfk_2;
+ALTER TABLE Groupchat
+  ADD CONSTRAINT groupchat_ibfk_2
+  FOREIGN KEY (groupID) REFERENCES `Team`(groupID) ON DELETE CASCADE;

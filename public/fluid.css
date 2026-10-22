@@ -1,0 +1,189 @@
+/* smooth animation when viewport resized */
+:root {
+  --fluid-gap: clamp(8px, 1.5vw, 16px);
+  --fluid-pad: clamp(12px, 2.5vw, 32px);
+  --fluid-radius: clamp(12px, 1.5vw, 20px);
+  --fluid-text: clamp(14px, 0.9vw + 10px, 18px);
+  --fluid-h1: clamp(22px, 3vw + 8px, 42px);
+  --fluid-btn-font: clamp(13px, 1.2vw + 8px, 20px);
+  --fluid-btn-pad-y: clamp(8px, 0.8vw + 4px, 12px);
+  --fluid-btn-pad-x: clamp(12px, 2.4vw, 33px);
+}
+
+.suggestionsHello,
+.authTitle { font-size: clamp(22px, 3vw + 8px, 42px); }
+
+.create-workspace-card h1,
+.join-workspace-card h1 { font-size: clamp(19px, 2.4vw + 8px, 32px); }
+
+.create-workspace-card,
+.join-workspace-card { padding: clamp(24px, 3vw, 36px) clamp(18px, 3.5vw, 44px); }
+
+.jwp-joinbtn { font-size: clamp(16px, 1vw + 8px, 20px); }
+.jwp-input { font-size: 16px; height: clamp(40px, 3vw + 14px, 48px); }
+
+.profile-page,
+.profile-content,
+.edit-sections-container,
+.aiSuggestContent,
+.availability-page,
+.skills-page {
+  transition: padding 0.3s ease, gap 0.3s ease, margin 0.3s ease;
+}
+
+.join-workspace-page,
+.create-workspace-page {
+  --under-bar: clamp(0px, calc(1100px - 100vw), 100px);
+}
+
+.create-workspace-page {
+  padding-top: clamp(0px, calc((1100px - 100vw) * 0.7), 70px);
+}
+
+.cw-sun {
+  width: calc(170px
+    + clamp(0px, calc((100vw - 600px) * 0.125), 50px)
+    + clamp(0px, calc((100vw - 1000px) * 0.8), 80px));
+  top: calc(-40px - clamp(0px, calc((100vw - 1000px) * 0.8), 80px));
+  left: calc(-40px - clamp(0px, calc((100vw - 1000px) * 0.2), 20px));
+}
+
+.cloudTop {
+  width: calc(90px
+    + clamp(0px, calc((100vw - 480px) * 0.0385), 20px)
+    + clamp(0px, calc((100vw - 1000px) * 0.3), 30px));
+}
+
+.cloudBottom {
+  width: calc(100px
+    + clamp(0px, calc((100vw - 480px) * 0.0577), 30px)
+    + clamp(0px, calc((100vw - 1000px) * 0.7), 70px));
+  transform: translate(
+    calc(26px + clamp(0px, calc((100vw - 1000px) * 0.54), 54px)),
+    30%
+  );
+}
+
+.jwstars {
+  width: calc(150px
+    + clamp(0px, calc((100vw - 400px) * 0.2), 40px)
+    + clamp(0px, calc((100vw - 600px) * 0.2333), 70px)
+    + clamp(0px, calc((100vw - 900px) * 0.9), 90px));
+
+  right: calc(6px
+    + clamp(0px, calc((100vw - 400px) * 0.02), 4px)
+    + clamp(0px, calc((100vw - 600px) * 0.0467), 14px)
+    + clamp(0px, calc((100vw - 900px) * 0.16), 16px));
+
+  top: calc(16px
+    + clamp(0px, calc((100vw - 600px) * 0.0467), 14px)
+    + clamp(0px, calc((100vw - 900px) * 0.2), 20px));
+}
+
+/* back button mobile responsive */
+.workspacetitleTop .userWorkbackButDimensions {
+  width: clamp(30px, 4vw, 40px);
+  height: clamp(30px, 4vw, 40px);
+}
+
+.workspacetitleTop .userWorkbackButDimensions .userWorkbackBut {
+  width: clamp(15px, 2.3vw, 23px);
+  height: clamp(15px, 2.3vw, 23px);
+}
+
+.cwbacktext .userWorkbackButDimensions {
+  width: clamp(26px, 3vw, 28px);
+  height: clamp(26px, 3vw, 28px);
+}
+.cwbacktext .userWorkbackButDimensions .userWorkbackBut {
+  width: clamp(12px, 1.5vw, 14px);
+  height: clamp(12px, 1.5vw, 14px);
+}
+
+.jwbacktext .userWorkbackButDimensions-jw {
+  width: clamp(26px, 3vw, 28px);
+  height: clamp(26px, 3vw, 28px);
+}
+.jwbacktext .userWorkbackButDimensions-jw img {
+  width: clamp(12px, 1.5vw, 14px);
+  height: clamp(12px, 1.5vw, 14px);
+}
+
+.join-workspace-page,
+.create-workspace-page {
+  transition: height 0.3s ease, min-height 0.3s ease, padding 0.3s ease;
+}
+
+.join-workspace-card,
+.create-workspace-card {
+  transition: margin-top 0.3s ease, padding 0.3s ease, gap 0.3s ease;
+}
+
+.noworkspace-layout {
+  transition: padding 0.3s ease;
+}
+
+.starsNoWorkspace {
+  transition: width 0.3s ease, margin 0.3s ease;
+}
+
+@media (max-width: 900px) {
+  .starsNoWorkspace {
+    width: clamp(280px, 78vw, 420px);
+    margin-top: 28px;
+    margin-bottom: -40px;
+  }
+}
+
+.card.card2 .textInCard { text-align: right; }
+
+.illustration { flex-shrink: 0; }
+
+.card-wrapper {
+  display: block;
+  width: min(700px, 100%);
+}
+
+.create-workspace-card {
+  width: 100%;
+}
+
+/* view members */
+
+.wmTitle,
+.wmSearchRow,
+.wmMessage,
+.wmTable th,
+.wmTable td {
+  transition: padding 0.3s ease, margin 0.3s ease, font-size 0.3s ease;
+}
+
+.wmPerson {
+  transition: gap 0.3s ease;
+}
+
+.wmAvatar {
+  transition: width 0.3s ease, height 0.3s ease, flex-basis 0.3s ease;
+}
+
+.wmName,
+.wmEmail {
+  transition: font-size 0.3s ease;
+}
+
+.wmBadge,
+.wmRemove {
+  transition: min-width 0.3s ease, padding 0.3s ease, font-size 0.3s ease, box-shadow 0.6s ease;
+}
+
+.members-page .workspacetitleTop {
+  transition: margin-bottom 0.3s ease;
+}
+
+.wmRosieImg {
+  transition: width 0.3s ease, right 0.3s ease;
+}
+
+.members-page .userWorkGroupList {
+  transition: padding 0.3s ease;
+}

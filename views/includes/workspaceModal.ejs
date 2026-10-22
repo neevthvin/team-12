@@ -84,8 +84,17 @@
       this.modal.classList.remove('is-open');
       this.modal.setAttribute('aria-hidden', 'true');
     }
+    
   };
   workspaceModal.modal.addEventListener('click', (event) => {
     if (event.target === workspaceModal.modal) workspaceModal.close();
   });
+  document.addEventListener('click', (e) => {
+  document.querySelectorAll('.workspaceMenu.open').forEach(menu => {
+    if (!menu.contains(e.target)) {
+      menu.classList.remove('open');
+      menu.querySelector('.userWorkDropDownDim')?.classList.remove('open');
+    }
+  });
+});
 </script>

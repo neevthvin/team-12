@@ -2,42 +2,57 @@
 <html lang="en">
 <%- include('includes/head2') %>
 
-<body class="user-workspace-page">
+<body class="user-workspace-page members-page">
+  <svg style="display:none;">
+    <filter id="displacementFilter">
+      <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="2" result="turbulence" />
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="100" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
   <%- include('includes/header') %>
 
   <div class="userWorkPage joinGroupPage">
-    <img src="/images/UserWorkspaceBack.webp" alt="" class="userWorkBackground">
     <main class="userWorkGroupList joinGroupContent">
-      <div class="workspacetitleTop">
-        <a href="/workspaces/<%= workspace.workspaceID %>" class="userWorkbackButDimensions" aria-label="Back to workspace">
-          <img src="/images/workspacebackBut.svg" alt="" class="userWorkbackBut userWorkbackButNORMAL">
-          <img src="/images/workspacebackHOVER.svg" alt="" class="userWorkbackBut userWorkbackButHOVER">
-        </a>
-        <h1 class="workspaceNameTitle"><%= workspace.workspaceName %></h1>
-      </div>
+      <div class="joinGroupLayout">
+        <div class="joinGroupLeft">
+          <div class="workspacetitleTop joinGroupTitle">
+            <a href="/workspaces/<%= workspace.workspaceID %>" class="userWorkbackButDimensions" aria-label="Back">
+              <img src="/images/greenArrow.svg" alt="" class="userWorkbackBut">
+            </a>
+            <h1 class="workspaceNameTitle"><%= workspace.workspaceName %></h1>
+            <%- include('includes/workspaceMenu', { theme: 'green' }) %>
+          </div>
 
-      <% if (message) { %>
-        <p class="joinGroupMessage"><%= message %></p>
-      <% } %>
-
-      <div class="joinGroupPanels">
-        <section class="joinGroupPanel joinGroupInvites">
-          <h2>Group Invites</h2>
-          <% if (invites.length === 0) { %>
-            <p class="joinGroupEmpty">You do not have any pending invitations.</p>
+          <% if (message) { %>
+            <p class="joinGroupMessage"><%= message %></p>
           <% } %>
-          <% invites.forEach(invite => { %>
-            <article class="joinGroupCard inviteCard">
-              <h3><%= invite.name %></h3>
-              <p>Invited by <%= invite.owner %></p>
-              <span class="groupIdLabel">Group ID: <%= invite.id %></span>
-              <div class="joinGroupActions">
-                <form method="post" action="/workspaces/<%= workspace.workspaceID %>/join-groups/<%= invite.id %>/invites/accept"><button type="submit" class="joinSmallButton">Accept</button></form>
-                <form method="post" action="/workspaces/<%= workspace.workspaceID %>/join-groups/<%= invite.id %>/invites/decline"><button type="submit" class="joinSmallButton joinDeclineButton">Decline</button></form>
-              </div>
-            </article>
-          <% }) %>
-        </section>
+
+          <section class="joinGroupPanel joinGroupInvites">
+            <h2>Group Requests</h2>
+            <div class="joinGroupScroll">
+              <% if (invites.length === 0) { %>
+                <p class="joinGroupEmpty">No pending requests for your groups.</p>
+              <% } %>
+              <% invites.forEach(invite => { %>
+                <article class="joinGroupCard inviteCard">
+                  <h3><%= invite.requester %></h3>
+                  <p>Wants to join <strong><%= invite.groupName %></strong></p>
+                  <div class="joinGroupActions">
+                    <form method="post" action="/workspaces/<%= workspace.workspaceID %>/join-groups/requests/<%= invite.id %>/approve">
+                      <button type="submit" class="joinSmallButton">Accept</button>
+                    </form>
+                    <form method="post" action="/workspaces/<%= workspace.workspaceID %>/join-groups/requests/<%= invite.id %>/deny">
+                      <button type="submit" class="joinSmallButton joinDeclineButton">Deny</button>
+                    </form>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+              <% if (invites.length === 0) { %>
+                <img class="sleepingRosie" src="/images/sleepingRosie.webp" alt="">
+              <% } %>
+          </section>
+        </div>
 
         <section class="joinGroupPanel publicGroups">
           <div class="publicGroupsHeading">
@@ -55,10 +70,15 @@
               <article class="joinGroupCard publicGroupCard">
                 <h3><%= group.name %></h3>
                 <p>Owner: <%= group.owner %></p>
-                <span class="groupIdLabel">Group ID: <%= group.id %></span>
-                <form method="post" action="/workspaces/<%= workspace.workspaceID %>/join-groups/<%= group.id %>">
-                  <button type="submit" class="joinWideButton">Request to Join</button>
-                </form>
+                <% if (group.requested) { %>
+                  <button type="button" class="joinWideButton" disabled>Request Pending</button>
+                <% } else { %>
+                  <form method="post" action="/workspaces/<%= workspace.workspaceID %>/join-groups/<%= group.id %>">
+                    <button type="submit" class="joinWideButton">
+                      <%= group.joinType === 'open' ? 'Join' : 'Request to Join' %>
+                    </button>
+                  </form>
+                <% } %>
               </article>
             <% }) %>
           </div>
@@ -67,5 +87,7 @@
     </main>
   </div>
 
+  <%- include('includes/workspaceModal') %>
+  <%- include('includes/footer') %>
 </body>
 </html>

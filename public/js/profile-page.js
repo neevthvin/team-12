@@ -115,11 +115,12 @@ function setProfileFields(data) {
   bioViewText.textContent = data.bio || "No bio added yet.";
   bioViewText.classList.toggle("empty-state", !data.bio);
 
-  profilePicturePreview.src = data.profilePicture || "";
+  if (data.profilePicture) profilePicturePreview.src = data.profilePicture;
 
   currentSkills = Array.isArray(data.skills) ? [...data.skills] : [];
   renderSkills();
   renderAvailability(data.availability || {});
+  clearSkeletons();
 }
 
 async function loadProfile() {
@@ -135,6 +136,7 @@ async function loadProfile() {
     document.querySelector(".profile-content").classList.add("loaded");
   } catch (error) {
     profileStatus.textContent = error.message;
+    clearSkeletons();
     document.querySelector(".profile-content").classList.add("loaded");
   }
 }
@@ -164,5 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     move();
 });
+
+function clearSkeletons() {
+  document.querySelectorAll(".skeleton").forEach(el => el.classList.remove("skeleton"));
+}
 
 loadProfile();
