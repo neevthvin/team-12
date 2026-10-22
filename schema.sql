@@ -80,6 +80,18 @@ CREATE TABLE IF NOT EXISTS User_Team (
     FOREIGN KEY (workspaceID) REFERENCES Workspace(workspaceID) ON DELETE CASCADE,
     FOREIGN KEY (groupID)     REFERENCES `Team`(groupID)      ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS Group_Invite (
+    groupID       INT NOT NULL,
+    invitedBy     INT NOT NULL,
+    invitedUserID INT NOT NULL,
+    status        ENUM('pending', 'accepted', 'declined') NOT NULL DEFAULT 'pending',
+    createdAt     DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (groupID, invitedUserID),
+    FOREIGN KEY (groupID) REFERENCES `Team`(groupID) ON DELETE CASCADE,
+    FOREIGN KEY (invitedBy) REFERENCES User(userID) ON DELETE CASCADE,
+    FOREIGN KEY (invitedUserID) REFERENCES User(userID) ON DELETE CASCADE
+);
  
 /*
 AI_Suggestion table that holds AI-generated suggestions for group formation

@@ -69,11 +69,19 @@
         </div>
       </div>
 
+      <% if (message) { %><p class="joinGroupMessage"><%= message %></p><% } %>
       <div class="userWorkContainer groupContainer">
 
         <!-- LEFT PANEL -->
         <section class="userWorkLeft groupMembersPanel">
           <h2 class="userWorkYourGroups">Members</h2>
+          <% if (isGroupOwner) { %>
+            <form class="groupInviteForm" method="post" action="/groups/<%= group.groupID %>/invite">
+              <label for="group-invitee">Invite a person</label>
+              <input id="group-invitee" name="invitee" type="text" placeholder="Username or email" required>
+              <button type="submit">Send invite</button>
+            </form>
+          <% } %>
           <div class="userWorkGroupsList groupMembersList">
             <% if (!members || members.length === 0) { %>
               <p class="userWorkLeftempty">No members yet.</p>
