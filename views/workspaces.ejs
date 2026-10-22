@@ -37,9 +37,23 @@
         <img class="starsNoWorkspace" src="/images/starsNoWorkspace.webp" alt="">
         <h2>You Are Currently Not in Any Workspaces</h2>
         <div class="rightSideButtons">
-          <a href="/workspaces/create" class="createbutton"><span>Create Workspace</span></a>
+          <span class="seedWrap">
+            <a href="/workspaces/create" class="createbutton"><span>Create Workspace</span></a>
+            <img class="seed s1" src="/images/seed1.png" alt="">
+            <img class="seed s2" src="/images/seed2.png" alt="">
+            <img class="seed s3" src="/images/seed3.png" alt="">
+            <img class="seed s4" src="/images/seed1.png" alt="">
+            <img class="seed s5" src="/images/seed2.png" alt="">
+          </span>
           <span class="orText">Or</span>
+          <span class="seedWrap">
           <a href="/workspaces/join-page" class="joinButton"><span>Join Workspace</span></a>
+          <img class="seed s1" src="/images/seed1.png" alt="">
+          <img class="seed s2" src="/images/seed2.png" alt="">
+          <img class="seed s3" src="/images/seed3.png" alt="">
+          <img class="seed s4" src="/images/seed1.png" alt="">
+          <img class="seed s5" src="/images/seed2.png" alt="">
+          </span>
         </div>
       </div>
       <img class="groundNoWorkspace" src="/images/groundNoWorkspace.png" alt="">
@@ -47,10 +61,12 @@
 
   <% } else { %>
 
+      <picture>
+        <source media="(max-width: 900px)" srcset="/images/groundMobile.png">
+        <img class="ground" src="/images/ground.png" alt="">
+      </picture>
 
-    <img class="ground" src="/images/ground.png"  alt="">
-
-    <main class="homepage-layout">
+      <main class="homepage-layout">
       <section class="homepage-left">
         <h2>Your Workspaces</h2>
         <div class="workspace-list">
@@ -70,9 +86,23 @@
           <img class="bottomStars" src="/images/bottomStars.webp" alt="">
           <h2>Enter a New Workspace</h2>
           <div class="rightSideButtons">
+          <span class="seedWrap">
             <a href="/workspaces/create" class="createbutton"><span>Create Workspace</span></a>
-            <span class="orText">Or</span>
-            <a href="/workspaces/join-page" class="joinButton"><span>Join Workspace</span></a>
+            <img class="seed s1" src="/images/seed1.png" alt="">
+            <img class="seed s2" src="/images/seed2.png" alt="">
+            <img class="seed s3" src="/images/seed3.png" alt="">
+            <img class="seed s4" src="/images/seed1.png" alt="">
+            <img class="seed s5" src="/images/seed2.png" alt="">
+          </span>
+          <span class="orText">Or</span>
+          <span class="seedWrap">
+          <a href="/workspaces/join-page" class="joinButton"><span>Join Workspace</span></a>
+          <img class="seed s1" src="/images/seed1.png" alt="">
+          <img class="seed s2" src="/images/seed2.png" alt="">
+          <img class="seed s3" src="/images/seed3.png" alt="">
+          <img class="seed s4" src="/images/seed1.png" alt="">
+          <img class="seed s5" src="/images/seed2.png" alt="">
+          </span>
           </div>
         </div>
       </section>
@@ -82,5 +112,37 @@
   </div>
 
   <%- include('includes/footer') %>
+
+<script>
+  document.querySelectorAll('.seedWrap').forEach(wrap => {
+    const seeds = wrap.querySelectorAll('.seed');
+
+    const stop = e => {
+      e.target.classList.remove('falling');
+      delete e.target.dataset.live;
+    };
+
+    seeds.forEach(s => {
+      s.addEventListener('animationstart', () => { s.dataset.live = '1'; });
+    });
+
+    wrap.addEventListener('mouseenter', () => {
+      seeds.forEach(s => {
+        s.removeEventListener('animationiteration', stop);
+        s.classList.add('falling');
+      });
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      seeds.forEach(s => {
+        if (s.dataset.live) {
+          s.addEventListener('animationiteration', stop, { once: true });
+        } else {
+          s.classList.remove('falling');
+        }
+      });
+    });
+  });
+</script>
 </body>
 </html>

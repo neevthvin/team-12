@@ -12,19 +12,17 @@ const editBioInput = document.getElementById("editBio");
 const editBioCount = document.getElementById("editBioCount");
 
 const editProfileForm = document.getElementById("editProfileForm");
-const editSaveProfileBtn = document.getElementById("editSaveProfileBtn");
 const editCancelBtn = document.getElementById("editCancelBtn");
 
 const editNewSkillInput = document.getElementById("editNewSkillInput");
 const editAddSkillBtn = document.getElementById("editAddSkillBtn");
-const editUpdateSkillsBtn = document.getElementById("editUpdateSkillsBtn");
 const editSkillsList = document.getElementById("editSkillsList");
 
 const editAvailabilityList = document.getElementById("editAvailabilityList");
 const editEditAvailabilityBtn = document.getElementById("editEditAvailabilityBtn");
 
-const editProfileStatus = document.getElementById("editProfileStatus");
-const editSkillsStatus = document.getElementById("editSkillsStatus");
+const editSaveBtn = document.getElementById("editSaveBtn");
+const editSaveStatus = document.getElementById("editSaveStatus");
 
 let editCurrentSkills = [];
 
@@ -147,12 +145,13 @@ function setEditProfileFields(data) {
   editBioInput.value = data.bio || "";
   updateEditBioCount();
 
-  editProfilePicturePreview.src = data.profilePicture || "";
+  if (data.profilePicture) editProfilePicturePreview.src = data.profilePicture;
   editPictureStatus.textContent = data.profilePicture ? "" : "No profile picture uploaded yet.";
 
   editCurrentSkills = Array.isArray(data.skills) ? [...data.skills] : [];
   renderEditSkills();
   renderEditAvailability(data.availability || {});
+  clearSkeletons();
 }
 
 async function loadEditProfile() {
@@ -167,7 +166,8 @@ async function loadEditProfile() {
     setEditProfileFields(data);
     document.querySelector(".profile-content").classList.add("loaded");
   } catch (error) {
-    editProfileStatus.textContent = error.message;
+    editSaveStatus.textContent = error.message;
+    clearSkeletons();
     document.querySelector(".profile-content").classList.add("loaded");
   }
 }
@@ -203,27 +203,36 @@ editProfilePictureInput.addEventListener("change", async () => {
 editProfileForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  try {
-    const response = await fetch("/profile/save", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        displayName: editDisplayNameInput.value,
-        organization: editOrganizationInput.value,
-        currentRole: editCurrentRoleInput.value,
-        bio: editBioInput.value,
-      }),
-    });
+  editSaveBtn.disabled = true;
+  editSaveStatus.textContent = "Saving...";
 
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error || "Failed to save profile");
+  try {
+    const [profileRes, skillsRes] = await Promise.all([
+      fetch("/profile/save", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName: editDisplayNameInput.value.trim(),
+          organization: editOrganizationInput.value.trim(),
+          currentRole: editCurrentRoleInput.value.trim(),
+          bio: editBioInput.value.trim(),
+        }),
+      }),
+      fetch("/profile/update-skills", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ skills: editCurrentSkills }),
+      }),
+    ]);
+
+    if (!profileRes.ok || !skillsRes.ok) {
+      throw new Error("Failed to save changes. Please try again.");
     }
 
-    editProfileStatus.textContent = "Profile saved.";
     window.location.href = "/profile";
   } catch (error) {
-    editProfileStatus.textContent = error.message;
+    editSaveStatus.textContent = error.message;
+    editSaveBtn.disabled = false;
   }
 });
 
@@ -240,25 +249,6 @@ editAddSkillBtn.addEventListener("click", () => {
   renderEditSkills();
 });
 
-editUpdateSkillsBtn.addEventListener("click", async () => {
-  try {
-    const response = await fetch("/profile/update-skills", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ skills: editCurrentSkills }),
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to update skills");
-    }
-
-    editSkillsStatus.textContent = "Skills updated.";
-    await loadEditProfile();
-  } catch (error) {
-    editSkillsStatus.textContent = error.message;
-  }
-});
 
 editEditAvailabilityBtn.addEventListener("click", () => {
   window.location.href = "/profile/availability";
@@ -289,5 +279,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     move();
 });
+
+editProfileForm.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") return;
+
+  const target = event.target;
+
+  // let Enter work normally in the bio box (new lines)
+  if (target.tagName === "TEXTAREA") return;
+
+  // Enter in the skills input = add the skill
+  if (target === editNewSkillInput) {
+    event.preventDefault();
+    editAddSkillBtn.click();
+    return;
+  }
+
+  // everywhere else: don't submit
+  if (target.tagName === "INPUT") event.preventDefault();
+});
+
+function clearSkeletons() {
+  document.querySelectorAll(".skeleton").forEach(el => el.classList.remove("skeleton"));
+}
 
 loadEditProfile();

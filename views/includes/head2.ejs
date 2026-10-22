@@ -1,7 +1,58 @@
 <head>
+<script>
+(function () {
+  if (location.pathname !== '/') return;
+  var urls = [
+    '/images/greengradient.webp',
+    '/images/pinkGradient.webp',
+    '/images/bee.webp',
+    '/images/stem.webp',
+    '/images/backbulb.webp',
+    '/images/lefttopouter.webp',
+    '/images/righttopouter.webp',
+    '/images/frontbulb.webp',
+    '/images/leftlowerouter.webp',
+    '/images/rightlowerouter.webp',
+    '/images/leftmiddleouter.webp',
+    '/images/rightmiddleouter.webp',
+    '/images/middlepetal.webp',
+    '/images/leaves.webp',
+    '/images/bagAndSeed.webp',
+    '/images/miniFlower.webp',
+    '/images/wateringCan.webp'
+  ];
+  var root = document.documentElement;
+  var pending = urls.length;
+  var open = true;
+  setTimeout(function () { open = false; }, 120);
+
+  urls.forEach(function (url) {
+    var fired = false;
+    var finish = function () {
+      if (fired) return;
+      fired = true;
+      pending--;
+      if (pending === 0 && open) root.classList.add('skip-skeleton');
+    };
+    var img = new Image();
+    img.onload = img.onerror = finish;
+    img.src = url;
+    if (img.complete) finish();
+  });
+})();
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Groupify</title>
+  <% if (typeof preloads !== 'undefined') { preloads.forEach(function(p) {
+  var href = typeof p === 'string' ? p : p.href;
+  var media = typeof p === 'string' ? '' : p.media;
+%>
+  <link rel="preload" as="image" href="<%= href %>"<% if (media) { %> media="<%= media %>"<% } %>>
+<% }); } %>
+  <link rel="preload" as="font" type="font/woff2" href="/fonts/Geologica.woff2" crossorigin>
   <link rel="stylesheet" href="/base.css" />
+  <link rel="stylesheet" href="/fluid.css" />
   <script src="https://kit.fontawesome.com/b0c0c57e17.js" crossorigin="anonymous"></script>
+  <script>document.documentElement.classList.add('is-loading');</script>
 </head>

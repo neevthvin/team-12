@@ -19,7 +19,7 @@
       <div class="create-workspace-card">
         <h1>CREATE NEW WORKSPACE</h1>
 
-        <form action="/workspaces/create" method="POST">
+        <form action="/workspaces/create" method="POST" data-enter-next>
 
         <div class="form-group">
           <label for="workspaceName">WORKSPACE NAME</label>
@@ -84,5 +84,6 @@
 
   </main>
   <%- include('includes/footer') %>
+  <script src="/js/enter-next.js"></script>
 </body>
 </html>

@@ -27,45 +27,58 @@
     <main class="profile-page">
       <section class="profile-card">
 
-        <div class="profile-content" data-username="<%= user.username %>">
+        <div class="profile-content loaded" data-username="<%= user.username %>">
           <div class="profile-header-section">
             <div class="profile-image-block">
               <img
                 id="profilePicturePreview"
-                src=""
+                src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
                 alt="Profile picture"
-                class="profile-picture"
+                class="profile-picture skeleton"
               />
             </div>
 
             <div class="profile-title-block">
-              <h1 id="displayNameText" class="display-name">Display Name</h1>
+              <h1 id="displayNameText" class="display-name skeleton">Display Name</h1>
               <p id="currentRoleText" class="current-role icon-line">
                 <img src="/images/briefcase.svg" class="icon-img" alt="Briefcase icon" />
-                <span id="currentRoleValue">Current Role</span>
+                <span id="currentRoleValue" class="skeleton">Current Role</span>
               </p>
               <p id="organizationText" class="organization icon-line">
                 <img src="/images/location.svg" class="icon-img" alt="Location icon" />
-                <span id="organizationValue">Organization</span>
+                <span id="organizationValue" class="skeleton">Organization</span>
               </p>
             </div>
           </div>
 
           <div class="bio-section">
             <div id="bioView" class="bio-box">
-              <p id="bioViewText" class="bio-text"></p>
+              <p id="bioViewText" class="bio-text skeleton"></p>
             </div>
           </div>
 
           <div class="profile-grid">
             <div class="profile-section">
               <h3>Skills</h3>
-              <div id="skillsList" class="skill-pills view-mode"></div>
+              <div id="skillsList" class="skill-pills view-mode">
+                <span class="skill-pill skeleton">Loading</span>
+                <span class="skill-pill skeleton">Loading..</span>
+                <span class="skill-pill skeleton">Loading...</span>
+              </div>
             </div>
 
             <div class="profile-section">
               <h3>Availability</h3>
-              <div id="availabilityList" class="availability-list"></div>
+              <div id="availabilityList" class="availability-list">
+                <div class="availability-row">
+                <span class="availability-day skeleton">Monday</span>
+                <span class="availability-time skeleton">00:00 AM - 00:00 PM</span>
+              </div>
+              <div class="availability-row">
+                <span class="availability-day skeleton">Tuesday</span>
+                <span class="availability-time skeleton">00:00 AM - 00:00 PM</span>
+              </div>
+              </div>
             </div>
           </div>
 

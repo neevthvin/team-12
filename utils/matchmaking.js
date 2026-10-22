@@ -150,4 +150,84 @@ async function getSuggestionsForUser(pool, workspaceID, userID, options = {}) {
     return { suggestions, warnings };
 }
 
-module.exports = { getSuggestionsForUser, scoreCandidates };
+// Greedy group builder: each pick adds skills the group lacks and
+// overlaps in time with everyone already in the group.
+function buildOptimalGroup(me, candidates, size = 5) {
+    const groupSkills = new Set(uniqueSkills(me.skills).map(s => s.toLowerCase()));
+    const remaining = candidates.map(c => ({ c, skills: uniqueSkills(c.skills) }));
+    const group = [];
+
+    while (group.length < size && remaining.length) {
+        const people = [me, ...group.map(g => g.member)];
+        let best = null;
+
+        for (const entry of remaining) {
+            const added = entry.skills.filter(s => !groupSkills.has(s.toLowerCase()));
+            const skillScore = entry.skills.length ? added.length / entry.skills.length : 0;
+
+            const avgOverlap = people.reduce(
+                (sum, p) => sum + computeAvailabilityOverlap(p.availability, entry.c.availability), 0
+            ) / people.length;
+            const availScore = Math.min(avgOverlap / TARGET_OVERLAP_MINUTES, 1);
+
+            let total = skillScore * WEIGHTS.skills + availScore * WEIGHTS.availability;
+            const myOverlap = computeAvailabilityOverlap(me.availability, entry.c.availability);
+            if (myOverlap === 0) total *= NO_OVERLAP_PENALTY;
+
+            if (!best || total > best.total) best = { entry, total, added };
+        }
+
+        remaining.splice(remaining.indexOf(best.entry), 1);
+        best.entry.skills.forEach(s => groupSkills.add(s.toLowerCase()));
+        group.push({
+            member: best.entry.c,
+            userID: best.entry.c.userID,
+            username: best.entry.c.username,
+            displayName: best.entry.c.displayName || "",
+            profilePicture: best.entry.c.profilePicture || "",
+            newSkills: best.added,
+            matchPercent: Math.round(best.total * 100)
+        });
+    }
+    return group;
+}
+
+async function getGroupAndPartner(pool, workspaceID, userID, { groupSize = 5 } = {}) {
+    const [members] = await pool.query(
+        `SELECT u.userID, u.username, p.displayName, p.profilePicture
+         FROM User_Workspace uw
+         JOIN User u ON u.userID = uw.userID
+         LEFT JOIN User_Profile p ON p.userID = u.userID
+         WHERE uw.workspaceID = ?`,
+        [workspaceID]
+    );
+
+    const others = members.filter(m => Number(m.userID) !== Number(userID));
+    if (others.length === 0) {
+        return { group: [], partner: null, warnings: ["No other members have joined this workspace yet."] };
+    }
+
+    const ids = members.map(m => m.userID);
+    const [skillRows] = await pool.query("SELECT userID, skills FROM Skills WHERE userID IN (?)", [ids]);
+    const [availRows] = await pool.query("SELECT userID, day, start, end FROM Availability WHERE userID IN (?)", [ids]);
+    const skillsByUser = groupBy(skillRows, r => r.userID, r => r.skills);
+    const availByUser = groupBy(availRows, r => r.userID, r => ({ day: r.day, start: r.start, end: r.end }));
+    const withData = m => ({
+        ...m,
+        skills: skillsByUser.get(m.userID) || [],
+        availability: availByUser.get(m.userID) || []
+    });
+
+    const me = withData(members.find(m => Number(m.userID) === Number(userID)) || { userID });
+    const warnings = [];
+    if (me.skills.length === 0) warnings.push("Add skills to your profile to improve your matches.");
+    if (me.availability.length === 0) warnings.push("Set your weekly availability to see who you can meet with.");
+
+    const candidates = others.map(withData);
+    const group = buildOptimalGroup(me, candidates, groupSize);
+    const partner = scoreCandidates(me, candidates, { skillMode: "similar" })[0] || null;
+
+    return { group, partner, warnings };
+}
+
+module.exports = { getSuggestionsForUser, scoreCandidates, getGroupAndPartner };

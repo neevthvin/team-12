@@ -12,7 +12,7 @@
         Sign Up
       </h1>
 
-      <form action="/signup" method="POST" class="authFormBox">
+      <form action="/signup" method="POST" class="authFormBox" data-enter-next>
         <% errors.forEach(error => { %>
           <p class="authError"><i class="fa-solid fa-circle-info"></i> <%= error %></p>
         <% }) %>
@@ -30,5 +30,6 @@
       </p>
 
     </main>
+    <script src="/js/enter-next.js"></script>
   </body>
 </html>

@@ -142,7 +142,7 @@ app.use("/profile", profRoute)
 app.use("/workspaces", workRoute)
 app.use("/groups", groupRoute)
 app.use("/groups", planningRoute)
-
+app.use("/workspaces", require("./joinGroups"))
 app.get("/dashboard", (req, res) => {
     if (!req.user) return res.redirect("/signin")
     res.redirect("/workspaces")

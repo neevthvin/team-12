@@ -3,7 +3,41 @@ const router = express.Router();
 const crypto = require("crypto");
 const pool = require("./config/db");
 const { mustBeLoggedIn } = require("./middleware/auth");
-const { getSuggestionsForUser } = require("./utils/matchmaking");
+const { getGroupAndPartner } = require("./utils/matchmaking");
+
+const joinPreloads = [
+  '/images/joinworkspacestars.webp',
+  '/images/joinGlow.webp',
+  '/images/buildings.webp',
+  '/images/buildingsLightOn.webp',
+  '/images/buildingsLightOn2.webp',
+  '/images/catblock.png',
+  '/images/cattail.png',
+  '/images/cat.png'
+];
+
+const createPreloads = [
+  '/images/sun.webp',
+  '/images/topCloud.webp',
+  '/images/bottomCloud.webp'
+];
+
+const workspacesPreloads = [
+  { href: '/images/ground.png',       media: '(min-width: 901px)' },
+  { href: '/images/groundMobile.png', media: '(max-width: 900px)' },
+  '/images/topStars.webp',
+  '/images/bottomStars.webp'
+];
+
+const noWorkspacesPreloads = [
+  '/images/starsNoWorkspace.webp',
+  '/images/groundNoWorkspace.png'
+];
+
+const membersPreloads = [
+  '/images/rosieWM.webp'
+];
+
 
 // GET user's workspaces
 router.get("/", mustBeLoggedIn, async (req, res) => {
@@ -16,7 +50,11 @@ router.get("/", mustBeLoggedIn, async (req, res) => {
              WHERE uw.userID = ?`,
             [req.user.userID]
         );
-        res.render("workspaces", { workspaces, errors: [] });
+        res.render("workspaces", {
+            workspaces,
+            errors: [],
+            preloads: workspaces.length ? workspacesPreloads : noWorkspacesPreloads
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send("Database error");
@@ -25,12 +63,12 @@ router.get("/", mustBeLoggedIn, async (req, res) => {
 
 // GET create workspace page
 router.get("/create", mustBeLoggedIn, (req, res) => {
-    res.render("CreateWorkspace", { errors: [] });
+    res.render("CreateWorkspace", { errors: [], preloads: createPreloads });
 });
 
 // GET join workspace page
 router.get("/join-page", mustBeLoggedIn, (req, res) => {
-    res.render("JoinWorkspace", { errors: [] });
+    res.render("JoinWorkspace", { errors: [], preloads: joinPreloads });
 });
 
 // POST create workspace (from CreateWorkspace page)
@@ -49,7 +87,7 @@ router.post("/create", mustBeLoggedIn, async (req, res) => {
     // if (startDate && endDate && startDate > endDate) errors.push("End date must be after start date");
 
     if (errors.length) {
-        return res.render("CreateWorkspace", { errors });
+      return res.render("CreateWorkspace", { errors, preloads: createPreloads });
     }
 
     try {
@@ -153,7 +191,7 @@ router.post("/join", mustBeLoggedIn, async (req, res) => {
         }
 
         if (errors.length) {
-            return res.render("JoinWorkspace", { errors });
+          return res.render("JoinWorkspace", { errors, preloads: joinPreloads });
         }
 
         res.redirect("/workspaces");
@@ -190,57 +228,6 @@ router.post("/:workspaceID/delete", mustBeLoggedIn, async (req, res) => {
     );
     if (!result.affectedRows) return res.status(403).redirect("/workspaces");
     res.redirect("/workspaces");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Database error");
-  }
-});
-
-// Join group page.
-router.get("/:workspaceID/join-groups", mustBeLoggedIn, async (req, res) => {
-  try {
-    const workspaceID = req.params.workspaceID;
-    const [workspaceRows] = await pool.query("SELECT * FROM Workspace WHERE workspaceID = ?", [workspaceID]);
-    const [accessRows] = await pool.query(
-      "SELECT 1 FROM User_Workspace WHERE workspaceID = ? AND userID = ?",
-      [workspaceID, req.user.userID]
-    );
-    if (!workspaceRows.length || !accessRows.length) return res.redirect("/workspaces");
-
-    const [groups] = await pool.query(`
-      SELECT g.groupID, g.groupName, g.ownerName
-      FROM \`Team\` g
-      WHERE g.workspaceID = ?
-        AND NOT EXISTS (
-          SELECT 1 FROM User_Team ug WHERE ug.groupID = g.groupID AND ug.userID = ?
-        )
-      ORDER BY g.createdAt DESC
-    `, [workspaceID, req.user.userID]);
-
-    const publicGroups = groups.map(group => ({
-      id: group.groupID,
-      name: group.groupName,
-      owner: group.ownerName
-    }));
-    const invites = [];
-
-    res.render("JoinGroup", { workspace: workspaceRows[0], publicGroups, invites, message: req.query.message || "" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Database error");
-  }
-});
-
-router.post("/:workspaceID/join-groups/:groupID", mustBeLoggedIn, async (req, res) => {
-  try {
-    const { workspaceID, groupID } = req.params;
-    const [groups] = await pool.query("SELECT groupID FROM `Team` WHERE groupID = ? AND workspaceID = ?", [groupID, workspaceID]);
-    if (!groups.length) return res.redirect(`/workspaces/${workspaceID}/join-groups?message=That+group+is+no+longer+available.`);
-    await pool.query(
-      "INSERT IGNORE INTO User_Team (userID, workspaceID, groupID, isOwner) VALUES (?, ?, ?, 'false')",
-      [req.user.userID, workspaceID, groupID]
-    );
-    res.redirect(`/workspaces/${workspaceID}/join-groups?message=Request+sent!+You+have+been+added+to+the+group.`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
@@ -305,13 +292,10 @@ router.get("/:workspaceID/suggestions", mustBeLoggedIn, async (req, res) => {
     }
 
     // ?mode=similar or ?mode=complementary (default)
-    const mode = req.query.mode === "similar" ? "similar" : "complementary";
-
-    const { suggestions, warnings } = await getSuggestionsForUser(
-      pool, workspaceID, req.user.userID, { skillMode: mode }
-    );
-
-    res.render("GroupSuggestions", { workspace, user: req.user, suggestions, warnings, mode });
+    const { group, partner, warnings } = await getGroupAndPartner(
+  pool, workspaceID, req.user.userID, { groupSize: 5 }
+);
+res.render("GroupSuggestions", { workspace, user: req.user, group, partner, warnings });
   } catch (err) {
     console.error(err);
     res.status(500).send("Database error");
@@ -350,7 +334,8 @@ router.get("/:workspaceID/members", mustBeLoggedIn, async (req, res) => {
       workspace,
       members,
       isWorkspaceOwner: Number(workspace.userID) === Number(req.user.userID),
-      message: req.query.message || ""
+      message: req.query.message || "",
+      preloads: membersPreloads
     });
   } catch (err) {
     console.error(err);
@@ -412,7 +397,7 @@ router.post("/:workspaceID/members/:memberID/remove", mustBeLoggedIn, async (req
     if (connection) connection.release();
   }
 });
- 
+
 
 module.exports = router;
 

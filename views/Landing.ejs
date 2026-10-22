@@ -2,6 +2,72 @@
 <html lang="en">
 <%- include('includes/head2') %>
 <body>
+  <div id="landingSkeleton" aria-hidden="true">
+    <div class="skHeader">
+      <div class="skBlock skLogo"></div>
+      <div class="skBlock skSignin"></div>
+    </div>
+
+    <section class="skHero">
+      <div class="skHeadText">
+        <div class="skBlock skTitle"></div>
+        <div class="skUnder">
+          <div class="skBlock skUL"></div>
+          <div class="skBlock skUL skUL2"></div>
+        </div>
+        <div class="skBlock skButton"></div>
+      </div>
+      <div class="skBlock skFlower"></div>
+    </section>
+
+    <section class="skPink">
+      <div class="skPinkTitle">
+        <div class="skBlock skPT"></div>
+        <div class="skBlock skPT skPT2"></div>
+      </div>
+
+      <div class="skCards">
+        <div class="skCard skCard1">
+          <div class="skCardInner">
+            <div class="skBlock skIllus"></div>
+            <div class="skTextCol">
+              <div class="skBlock skTxt"></div>
+              <div class="skBlock skTxt"></div>
+              <div class="skBlock skTxt"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skCard skCard2">
+          <div class="skCardInner">
+            <div class="skTextCol">
+              <div class="skBlock skTxt"></div>
+              <div class="skBlock skTxt"></div>
+              <div class="skBlock skTxt"></div>
+            </div>
+            <div class="skBlock skIllus"></div>
+          </div>
+        </div>
+
+        <div class="skCard skCard3">
+          <div class="skCardInner">
+            <div class="skBlock skIllus"></div>
+            <div class="skTextCol">
+              <div class="skBlock skTxt"></div>
+              <div class="skBlock skTxt"></div>
+              <div class="skBlock skTxt"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="skFooter">
+      <div class="skBlock skFLogo"></div>
+      <div class="skBlock skCopy"></div>
+    </div>
+  </div>
+
   <svg style="display:none;">
     <filter id="displacementFilter">
       <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="3" result="turbulence" />
@@ -144,6 +210,77 @@
   { threshold: 0.20 });
 
   cards.forEach(card => cardObserver.observe(card));
+
+  const headlineEl = document.querySelector('.headline');
+  const textEl = document.querySelector('.headline-text');
+  const flowerEl = document.querySelector('.flower-container');
+  const skEl = document.getElementById('landingSkeleton');
+
+  function syncSkeleton() {
+    if (!skEl) return;
+    ['--flower-scale', '--text-shift'].forEach((name) => {
+      const src = name === '--flower-scale' ? flowerEl : textEl;
+      const v = src.style.getPropertyValue(name);
+      if (v) skEl.style.setProperty(name, v);
+      else skEl.style.removeProperty(name);
+    });
+  }
+
+  function fitFlower() {
+    if (window.innerWidth > 900) {
+      flowerEl.style.removeProperty('--flower-scale');
+      textEl.style.removeProperty('--text-shift');
+      syncSkeleton();
+      return;
+    }
+
+    const gap = 12; 
+    const textBottom = textEl.offsetTop + textEl.offsetHeight;
+    const space = headlineEl.clientHeight - textBottom - gap;
+
+    const byHeight = space / 602;
+    const byWidth = headlineEl.clientWidth / 684;
+    const scale = Math.max(Math.min(0.88, byHeight, byWidth), 0.1);
+    flowerEl.style.setProperty('--flower-scale', scale);
+
+    const free = Math.max(0, space - 602 * scale);
+    textEl.style.setProperty('--text-shift', (free * 0.5) + 'px');
+
+    syncSkeleton();
+  }
+
+  fitFlower();
+  window.addEventListener('resize', fitFlower);
+  window.addEventListener('load', fitFlower);
+
+  (function () {
+    const sk = document.getElementById('landingSkeleton');
+    if (!sk) return;
+
+    if (document.documentElement.classList.contains('skip-skeleton')) {
+      sk.remove();
+      return;
+    }
+
+    const hide = () => {
+      sk.classList.add('hidden');
+      setTimeout(() => sk.remove(), 700);
+    };
+
+    const bgUrls = ['/images/greengradient.webp', '/images/pinkGradient.webp'];
+
+    const imgs = [...document.querySelectorAll('img')].map(img =>
+      img.complete ? Promise.resolve() : img.decode().catch(() => {})
+    );
+    const bgs = bgUrls.map(src => new Promise(res => {
+      const i = new Image();
+      i.onload = i.onerror = res;
+      i.src = src;
+    }));
+    const timeout = new Promise(res => setTimeout(res, 5000));
+
+    Promise.race([Promise.all([...imgs, ...bgs]), timeout]).then(hide);
+  })();
 </script>
 </body>
 </html>
