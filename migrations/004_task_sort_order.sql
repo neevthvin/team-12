@@ -1,0 +1,3 @@
+USE groupify;
+
+ALTER TABLE Tasks ADD COLUMN sortOrder INT NOT NULL DEFAULT 0;
